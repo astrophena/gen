@@ -14,6 +14,16 @@ builds:
     ldflags:
       # Keep this synced with Makefile.
       - -s -w -X main.Version={{.Version}}
+scoop:
+  bucket:
+    owner: astrophena
+    name: gen
+  commit_author:
+    name: Ilya Mateyko
+    email: git@inbox.astrophena.me
+  homepage: "https://github.com/astrophena/site"
+  description: "An another static site generator."
+  license: MIT
 archives:
   - format: binary
 checksum:
