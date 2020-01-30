@@ -1,0 +1,24 @@
+project_name: gen
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+    ldflags:
+      # Keep this synced with Makefile.
+      - -s -w -X main.Version={{.Version}}
+archives:
+  - format: binary
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
