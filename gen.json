@@ -1,0 +1,15 @@
+{
+    "version": "0.1.2",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/astrophena/gen/releases/download/v0.1.2/gen_0.1.2_windows_amd64.tar.gz",
+            "bin": [
+                "gen.exe"
+            ],
+            "hash": "3ca235a0d7267d1b99f3613ad69f1d9b76145946fec23eaec3c0707034662acb"
+        }
+    },
+    "homepage": "https://github.com/astrophena/site",
+    "license": "MIT",
+    "description": "An another static site generator."
+}
