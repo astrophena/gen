@@ -1,6 +1,6 @@
-# gen
+# [gen]
 
-Another static site generator.
+An another static site generator.
 
 Forked from [plop].
 
@@ -33,14 +33,16 @@ $ scoop install gen
 
 ## License
 
-Copyright 2020 Ilya Mateyko. All rights reserved.
+© 2020 Ilya Mateyko. All rights reserved.
 
-Copyright 2019 Frédéric Guillot. All rights reserved.
+© 2019 Frédéric Guillot. All rights reserved.
 
 Use of this source code is governed by the MIT license that can be
-found in the LICENSE file.
+found in the [LICENSE] file.
 
+[gen]: https://astrophena.me/gen
 [plop]: https://github.com/fguillot/plop
 [precompiled binary]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org
 [Scoop]: https://scoop.sh
+[LICENSE]: LICENSE
