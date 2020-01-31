@@ -82,7 +82,7 @@ func main() {
 						Name:    "css",
 						Aliases: []string{"c"},
 						Usage:   "use CSS from `FILE`",
-						Value:   "src/sitewide.css",
+						Value:   "sitewide.css",
 					},
 					&cli.StringFlag{
 						Name:    "pub",
