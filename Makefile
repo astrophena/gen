@@ -1,7 +1,9 @@
+# Install binary by default to $HOME/.local/bin by systemd conventions.
 # See https://www.freedesktop.org/software/systemd/man/file-hierarchy.html#Home%20Directory
 PREFIX  ?= $(HOME)/.local
 BINDIR  ?= $(PREFIX)/bin
-VERSION ?= $(shell git rev-parse --short HEAD)
+# Default version format for snapshot releases. Example: 0.1.2-c91f0d3
+VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-parse --short HEAD)
 
 APP     = gen
 LDFLAGS = "-s -w -X main.Version=$(VERSION)"
