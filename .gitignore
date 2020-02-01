@@ -1,1 +1,3 @@
+# Ignore generated files.
 gen
+example/out
