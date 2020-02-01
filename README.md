@@ -38,11 +38,11 @@ $ scoop install gen
 © 2019 Frédéric Guillot. All rights reserved.
 
 Use of this source code is governed by the MIT license that can be
-found in the [LICENSE] file.
+found in the [LICENSE.md] file.
 
 [gen]: https://astrophena.me/gen
 [plop]: https://github.com/fguillot/plop
 [precompiled binary]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org
 [Scoop]: https://scoop.sh
-[LICENSE]: LICENSE
+[LICENSE.md]: LICENSE.md
