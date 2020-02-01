@@ -39,8 +39,12 @@ var (
 	tpl *template.Template
 	m   *minify.M
 
-	CSS template.CSS
+	// Holds minified sitewide CSS.
+	minifiedCSS template.CSS
 
+	// Version of gen.
+	//
+	// Filled either by make or goreleaser.
 	Version = "dev"
 )
 
@@ -153,8 +157,8 @@ func build(c *cli.Context) (err error) {
 		"version": func() string {
 			return fmt.Sprintf("%s, %s (%s/%s)", Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 		},
-		"css": func() template.CSS {
-			return CSS
+		"minifiedCSS": func() template.CSS {
+			return minifiedCSS
 		},
 	}
 
@@ -168,7 +172,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	CSS, err = minifyCSS(cssPath)
+	minifiedCSS, err = minifyCSS(cssPath)
 	if err != nil {
 		return err
 	}
