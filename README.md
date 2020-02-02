@@ -1,5 +1,7 @@
 # [gen]
 
+![GoReleaser](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)
+
 An another static site generator.
 
 Forked from [plop].
