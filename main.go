@@ -160,6 +160,9 @@ func build(c *cli.Context) (err error) {
 		"minifiedCSS": func() template.CSS {
 			return minifiedCSS
 		},
+		"year": func() int {
+			return time.Now().Year()
+		},
 	}
 
 	tpl, err = template.New("main").Funcs(tplFuncs).ParseGlob(tplDir + "/*.html")
