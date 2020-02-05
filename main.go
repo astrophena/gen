@@ -3,7 +3,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// gen is an another static site generator.
+// An another static site generator.
 package main // import "astrophena.me/gen"
 
 import (
