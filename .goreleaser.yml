@@ -11,9 +11,11 @@ builds:
       - darwin
     goarch:
       - amd64
+    # Keep these synced with Makefile.
+    flags:
+      - -trimpath
     ldflags:
-      # Keep this synced with Makefile.
-      - -s -w -X main.Version={{.Version}}
+      - -s -w -X main.Version={{.Version}} -buildid=
 scoop:
   bucket:
     owner: astrophena

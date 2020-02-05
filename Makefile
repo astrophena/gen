@@ -6,12 +6,12 @@ BINDIR  ?= $(PREFIX)/bin
 VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-parse --short HEAD)
 
 APP     = gen
-LDFLAGS = "-s -w -X main.Version=$(VERSION)"
+LDFLAGS = "-s -w -X main.Version=$(VERSION) -buildid="
 
 .PHONY: build install clean fmt help
 
 build: ## Compile.
-	@ go build -o $(APP) -ldflags=$(LDFLAGS)
+	@ go build -o $(APP) -trimpath -ldflags=$(LDFLAGS)
 
 install: build ## Install to $PREFIX.
 	@ mkdir -m755 -p $(BINDIR) && \
