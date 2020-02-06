@@ -6,7 +6,7 @@ BINDIR  ?= $(PREFIX)/bin
 VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-parse --short HEAD)
 
 APP     = gen
-LDFLAGS = "-s -w -X main.Version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X main.version=$(VERSION) -buildid="
 
 .PHONY: build install clean fmt help
 

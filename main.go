@@ -39,13 +39,9 @@ var (
 	tpl *template.Template
 	m   *minify.M
 
-	// Holds minified sitewide CSS.
 	minifiedCSS template.CSS
 
-	// Version of gen.
-	//
-	// Filled either by make or goreleaser.
-	Version = "dev"
+	version = "dev"
 )
 
 func init() {
@@ -58,7 +54,7 @@ func main() {
 	app := &cli.App{
 		Name:    "gen",
 		Usage:   "an another static site generator",
-		Version: Version,
+		Version: version,
 		Authors: []*cli.Author{
 			{
 				Name:  "Ilya Mateyko",
@@ -155,7 +151,7 @@ func build(c *cli.Context) (err error) {
 			return ts.Format("January 2, 2006")
 		},
 		"version": func() string {
-			return fmt.Sprintf("%s, %s (%s/%s)", Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+			return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 		},
 		"minifiedCSS": func() template.CSS {
 			return minifiedCSS

@@ -15,7 +15,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X main.Version={{.Version}} -buildid=
+      - -s -w -X main.version={{.Version}} -buildid=
 scoop:
   bucket:
     owner: astrophena
