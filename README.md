@@ -1,7 +1,5 @@
 # [gen]
 
-![GoReleaser](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)
-
 An another static site generator.
 
 Forked from [plop].
@@ -26,7 +24,7 @@ $ cd gen
 $ make install # installs by default to $HOME/.local/bin
 ```
 
-### [Scoop] (Windows)
+### [Scoop]
 
 ```bash
 $ scoop bucket add gen https://github.com/astrophena/gen.git
