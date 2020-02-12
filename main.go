@@ -268,15 +268,24 @@ func parseFile(filename string) (*pageMetadata, error) {
 	return page, nil
 }
 
-func browse(dir string, ext string) (files []string, err error) {
+func browse(dir string, exts ...string) (files []string, err error) {
 	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if !info.IsDir() && strings.HasSuffix(path, "."+ext) {
-			files = append(files, path)
+		if info.IsDir() {
+			return nil
 		}
+
+		for _, ext := range exts {
+			if !strings.HasSuffix(path, "."+ext) {
+				return nil
+			}
+		}
+
+		files = append(files, path)
+
 		return nil
 	})
 
