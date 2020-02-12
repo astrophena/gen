@@ -43,14 +43,14 @@ var (
 
 	minifiedCSS template.CSS
 
-	version = "?"
+	version = "<not set>"
 )
 
 func init() {
-	if version == "?" {
+	if version == "<not set>" {
 		bi, ok := debug.ReadBuildInfo()
 		if ok {
-			version = bi.Main.Version
+			version = strings.TrimPrefix(bi.Main.Version, "v")
 		}
 	}
 
