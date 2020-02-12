@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -42,10 +43,17 @@ var (
 
 	minifiedCSS template.CSS
 
-	version = "dev"
+	version = "?"
 )
 
 func init() {
+	if version == "?" {
+		bi, ok := debug.ReadBuildInfo()
+		if ok {
+			version = bi.Main.Version
+		}
+	}
+
 	m = minify.New()
 	m.AddFunc("text/html", html.Minify)
 	m.AddFunc("text/css", css.Minify)
