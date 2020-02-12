@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -18,6 +17,8 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	"astrophena.me/gen/fileutil"
 
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
@@ -136,11 +137,11 @@ func build(c *cli.Context) (err error) {
 	pubDir := c.String("pub")
 	cssPath := c.String("css")
 
-	if err := mkDir(outDir); err != nil {
+	if err := fileutil.MkDir(outDir); err != nil {
 		return err
 	}
 
-	fmt.Printf("building into %s\n", outDir)
+	fmt.Printf("Building into %s.\n", outDir)
 	start := time.Now()
 
 	tplFuncs := template.FuncMap{
@@ -166,7 +167,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	srcs, err := browse(srcDir, "html")
+	srcs, err := fileutil.Browse(srcDir, "html")
 	if err != nil {
 		return err
 	}
@@ -189,11 +190,11 @@ func build(c *cli.Context) (err error) {
 		}
 	}
 
-	if err := copyDirContents(pubDir, outDir); err != nil {
+	if err := fileutil.CopyDirContents(pubDir, outDir); err != nil {
 		return err
 	}
 
-	fmt.Printf("built in %v\n", time.Since(start))
+	fmt.Printf("Built in %v.\n", time.Since(start))
 
 	return nil
 }
@@ -202,8 +203,8 @@ func serve(c *cli.Context) error {
 	port := c.Int("port")
 	dir := c.String("dir")
 
-	if !exists(dir) {
-		return fmt.Errorf("%s does not exist: run \"gen build\" to build the site", dir)
+	if !fileutil.Exists(dir) {
+		build(c)
 	}
 
 	handler := http.FileServer(http.Dir(dir))
@@ -216,7 +217,7 @@ func serve(c *cli.Context) error {
 		Handler:      handler,
 	}
 
-	fmt.Printf("serving %s on port %v…\n", dir, port)
+	fmt.Printf("Serving %s on port %v.\n", dir, port)
 	if err := srv.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
 			return err
@@ -269,7 +270,7 @@ func parseFile(filename string) (*pageMetadata, error) {
 }
 
 func generatePage(page *pageMetadata, outDir string) error {
-	if err := mkDir(filepath.Join(outDir, filepath.Dir(page.URI))); err != nil {
+	if err := fileutil.MkDir(filepath.Join(outDir, filepath.Dir(page.URI))); err != nil {
 		return err
 	}
 
@@ -296,7 +297,7 @@ func generatePage(page *pageMetadata, outDir string) error {
 }
 
 func minifyCSS(path string) (template.CSS, error) {
-	if !exists(path) {
+	if !fileutil.Exists(path) {
 		return "", fmt.Errorf("%s: no such file", path)
 	}
 
@@ -311,91 +312,4 @@ func minifyCSS(path string) (template.CSS, error) {
 	}
 
 	return template.CSS(s), nil
-}
-
-// browse recursively returns a list of files in the directory dir,
-// with file extensions exts or an error in case of failure. If no
-// exts are supplied, all files are included.
-func browse(dir string, exts ...string) (files []string, err error) {
-	return files, filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		for _, ext := range exts {
-			if !strings.HasSuffix(path, "."+ext) {
-				return nil
-			}
-		}
-
-		files = append(files, path)
-
-		return nil
-	})
-}
-
-// copyDirContents recursively copies contents of the src directory to dst.
-func copyDirContents(src, dst string) (err error) {
-	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
-		sp := strings.TrimPrefix(path, src+string(os.PathSeparator))
-		dp := filepath.Join(dst, sp)
-
-		if path == src || info.IsDir() {
-			return nil
-		}
-
-		dir := filepath.Dir(dp)
-		if err := mkDir(dir); err != nil {
-			return err
-		}
-
-		if err := copyFile(path, dp); err != nil {
-			return err
-		}
-
-		return nil
-	})
-}
-
-// exists returns true if a file or directory exists and false
-// otherwise.
-func exists(path string) (exists bool) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
-// mkDir creates a directory if it does not exist.
-func mkDir(dir string) (err error) {
-	if !exists(dir) {
-		return os.MkdirAll(dir, 0755)
-	}
-	return nil
-}
-
-// copyFile copies the src file to dst. Any existing file will be
-// overwritten and it will not copy file attributes.
-func copyFile(src, dst string) (err error) {
-	in, err := os.Open(src)
-	if err != nil {
-		return err
-	}
-	defer in.Close()
-
-	out, err := os.Create(dst)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, in)
-	if err != nil {
-		return err
-	}
-	return out.Close()
 }
