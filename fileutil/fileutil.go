@@ -78,8 +78,8 @@ func MkDir(dir string) (err error) {
 	return nil
 }
 
-// CopyFile copies the src file to dst. Any existing file will be
-// overwritten and it will not copy file attributes.
+// CopyFile copies the src file to dst. Any existing file will be overwritten
+// and it will not copy file attributes.
 func CopyFile(src, dst string) (err error) {
 	in, err := os.Open(src)
 	if err != nil {
