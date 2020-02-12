@@ -268,30 +268,6 @@ func parseFile(filename string) (*pageMetadata, error) {
 	return page, nil
 }
 
-func browse(dir string, exts ...string) (files []string, err error) {
-	err = filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		for _, ext := range exts {
-			if !strings.HasSuffix(path, "."+ext) {
-				return nil
-			}
-		}
-
-		files = append(files, path)
-
-		return nil
-	})
-
-	return files, err
-}
-
 func generatePage(page *pageMetadata, outDir string) error {
 	if err := mkDir(filepath.Join(outDir, filepath.Dir(page.URI))); err != nil {
 		return err
@@ -337,23 +313,48 @@ func minifyCSS(path string) (template.CSS, error) {
 	return template.CSS(s), nil
 }
 
-// copyDirContents recursively copies contents of the src directory to dst.
-func copyDirContents(src, dst string) (err error) {
-	return filepath.Walk(src, func(file string, info os.FileInfo, err error) error {
-		srcPath := strings.TrimPrefix(file, src+string(os.PathSeparator))
-		dstPath := filepath.Join(dst, srcPath)
+// browse recursively returns a list of files in the directory dir,
+// with the extensions exts, returning an error in case of failure.
+// If no exts is supplied, all file extensions are allowed.
+func browse(dir string, exts ...string) (files []string, err error) {
+	return files, filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 
-		if file == src || info.IsDir() {
+		if info.IsDir() {
 			return nil
 		}
 
-		dir := filepath.Dir(dstPath)
-		if err := mkDir(dir); err != nil {
-			return fmt.Errorf("%s: failed to create: %w", dir, err)
+		for _, ext := range exts {
+			if !strings.HasSuffix(path, "."+ext) {
+				return nil
+			}
 		}
 
-		if err := copyFile(file, dstPath); err != nil {
-			return fmt.Errorf("%s: failed to copy to %s: %w", file, dst, err)
+		files = append(files, path)
+
+		return nil
+	})
+}
+
+// copyDirContents recursively copies contents of the src directory to dst.
+func copyDirContents(src, dst string) (err error) {
+	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
+		sp := strings.TrimPrefix(path, src+string(os.PathSeparator))
+		dp := filepath.Join(dst, sp)
+
+		if path == src || info.IsDir() {
+			return nil
+		}
+
+		dir := filepath.Dir(dp)
+		if err := mkDir(dir); err != nil {
+			return err
+		}
+
+		if err := copyFile(path, dp); err != nil {
+			return err
 		}
 
 		return nil
@@ -362,7 +363,7 @@ func copyDirContents(src, dst string) (err error) {
 
 // exists returns true if a file or directory exists and false
 // otherwise.
-func exists(path string) bool {
+func exists(path string) (exists bool) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -370,18 +371,16 @@ func exists(path string) bool {
 }
 
 // mkDir creates a directory if it does not exist.
-func mkDir(dir string) error {
+func mkDir(dir string) (err error) {
 	if !exists(dir) {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			return err
-		}
+		return os.MkdirAll(dir, 0755)
 	}
 	return nil
 }
 
 // copyFile copies the src file to dst. Any existing file will be
 // overwritten and it will not copy file attributes.
-func copyFile(src, dst string) error {
+func copyFile(src, dst string) (err error) {
 	in, err := os.Open(src)
 	if err != nil {
 		return err
