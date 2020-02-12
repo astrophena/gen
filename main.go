@@ -314,8 +314,8 @@ func minifyCSS(path string) (template.CSS, error) {
 }
 
 // browse recursively returns a list of files in the directory dir,
-// with the extensions exts, returning an error in case of failure.
-// If no exts is supplied, all file extensions are allowed.
+// with file extensions exts or an error in case of failure. If no
+// exts are supplied, all files are included.
 func browse(dir string, exts ...string) (files []string, err error) {
 	return files, filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
