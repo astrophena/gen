@@ -13,7 +13,7 @@ Install the [precompiled binary].
 [Go] 1.13 is required.
 
 ```bash
-$ go get astrophena.me/gen
+$ pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
 ```
 
 Or:
