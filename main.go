@@ -7,7 +7,6 @@
 package main // import "astrophena.me/gen"
 
 import (
-	"bytes"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -21,13 +20,27 @@ import (
 
 	"astrophena.me/gen/fileutil"
 
+	"github.com/oxtoacart/bpool"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/html"
 	"github.com/urfave/cli/v2"
 )
 
-type pageMetadata struct {
+const (
+	develVersion = "(devel)"
+	bufpoolSize  = 48
+)
+
+var (
+	tpl         *template.Template
+	m           *minify.M
+	minifiedCSS template.CSS
+	version     string
+	bufpool     *bpool.BufferPool
+)
+
+type page struct {
 	URI         string
 	Title       string
 	Description string
@@ -37,26 +50,61 @@ type pageMetadata struct {
 	filename string
 }
 
-var (
-	tpl *template.Template
-	m   *minify.M
+func (p *page) Generate(dst string) (err error) {
+	dir := filepath.Join(dst, filepath.Dir(p.URI))
 
-	minifiedCSS template.CSS
+	if err := fileutil.MkDir(dir); err != nil {
+		return err
+	}
 
-	version = "<not set>"
-)
+	// TODO(astrophena): Maybe don't use defer there?
+
+	tbuf := bufpool.Get()
+	defer bufpool.Put(tbuf)
+
+	mbuf := bufpool.Get()
+	defer bufpool.Put(mbuf)
+
+	if err := tpl.ExecuteTemplate(tbuf, p.template, p); err != nil {
+		return err
+	}
+
+	if err := m.Minify("text/html", mbuf, tbuf); err != nil {
+		return err
+	}
+
+	f, err := os.Create(filepath.Join(dst, p.URI))
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err := mbuf.WriteTo(f); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func init() {
-	if version == "<not set>" {
+	// If version was not already embedded, try to get it from module
+	// version.
+	if version == "" {
 		bi, ok := debug.ReadBuildInfo()
 		if ok {
 			version = strings.TrimPrefix(bi.Main.Version, "v")
+		} else {
+			version = develVersion
 		}
 	}
 
+	// Set up minifiers.
 	m = minify.New()
 	m.AddFunc("text/html", html.Minify)
 	m.AddFunc("text/css", css.Minify)
+
+	// Set up buffer pool.
+	bufpool = bpool.NewBufferPool(bufpoolSize)
 }
 
 func main() {
@@ -139,35 +187,43 @@ func main() {
 }
 
 func build(c *cli.Context) (err error) {
-	srcDir := c.String("src")
-	tplDir := c.String("tpl")
-	outDir := c.String("out")
-	pubDir := c.String("pub")
-	cssPath := c.String("css")
+	var (
+		srcDir = c.String("src")
+		tplDir = c.String("tpl")
+		outDir = c.String("out")
+		pubDir = c.String("pub")
+
+		cssPath = c.String("css")
+
+		start = time.Now()
+
+		tplFuncs = template.FuncMap{
+			"noescape": func(s string) template.HTML {
+				return template.HTML(s)
+			},
+			"strdate": func(ts time.Time) string {
+				return ts.Format("January 2, 2006")
+			},
+			"version": func() string {
+				return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+			},
+			"minifiedCSS": func() template.CSS {
+				return minifiedCSS
+			},
+			"year": func() int {
+				return time.Now().Year()
+			},
+		}
+	)
+
+	fmt.Printf("Building into %s.\n", outDir)
 
 	if err := fileutil.MkDir(outDir); err != nil {
 		return err
 	}
 
-	fmt.Printf("Building into %s.\n", outDir)
-	start := time.Now()
-
-	tplFuncs := template.FuncMap{
-		"noescape": func(s string) template.HTML {
-			return template.HTML(s)
-		},
-		"strdate": func(ts time.Time) string {
-			return ts.Format("January 2, 2006")
-		},
-		"version": func() string {
-			return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
-		},
-		"minifiedCSS": func() template.CSS {
-			return minifiedCSS
-		},
-		"year": func() int {
-			return time.Now().Year()
-		},
+	if err := fileutil.CopyDirContents(pubDir, outDir); err != nil {
+		return err
 	}
 
 	tpl, err = template.New("main").Funcs(tplFuncs).ParseGlob(tplDir + "/*.html")
@@ -186,20 +242,16 @@ func build(c *cli.Context) (err error) {
 	}
 
 	for _, src := range srcs {
-		page, err := parseFile(src)
+		p, err := parseFile(src)
 		if err != nil {
 			return err
 		}
 
-		if page != nil {
-			if err := generatePage(page, outDir); err != nil {
+		if p != nil {
+			if err := p.Generate(outDir); err != nil {
 				return err
 			}
 		}
-	}
-
-	if err := fileutil.CopyDirContents(pubDir, outDir); err != nil {
-		return err
 	}
 
 	fmt.Printf("Built in %v.\n", time.Since(start))
@@ -208,8 +260,10 @@ func build(c *cli.Context) (err error) {
 }
 
 func serve(c *cli.Context) error {
-	port := c.Int("port")
-	dir := c.String("dir")
+	var (
+		port = c.Int("port")
+		dir  = c.String("dir")
+	)
 
 	if !fileutil.Exists(dir) {
 		build(c)
@@ -235,7 +289,7 @@ func serve(c *cli.Context) error {
 	return nil
 }
 
-func parseFile(filename string) (*pageMetadata, error) {
+func parseFile(filename string) (*page, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
@@ -248,7 +302,7 @@ func parseFile(filename string) (*pageMetadata, error) {
 	}
 
 	header := content[:position]
-	page := &pageMetadata{
+	p := &page{
 		Body:     content[position+len(separator):],
 		filename: filename,
 	}
@@ -256,52 +310,25 @@ func parseFile(filename string) (*pageMetadata, error) {
 	for _, line := range strings.Split(header, "\n") {
 		switch {
 		case strings.HasPrefix(line, "title: "):
-			page.Title = line[7:]
+			p.Title = line[7:]
 		case strings.HasPrefix(line, "description: "):
-			page.Description = line[13:]
+			p.Description = line[13:]
 		case strings.HasPrefix(line, "template: "):
-			page.template = line[10:]
+			p.template = line[10:]
 		case strings.HasPrefix(line, "uri: "):
-			page.URI = line[5:]
+			p.URI = line[5:]
 		}
 	}
 
-	if page.Title == "" || page.template == "" || page.URI == "" {
+	if p.Title == "" || p.template == "" || p.URI == "" {
 		return nil, fmt.Errorf("%s: missing required header parameter (title, template, uri)", filename)
 	}
 
-	if tpl.Lookup(page.template) == nil {
-		return nil, fmt.Errorf("%s: the template %s specified is not defined", filename, page.template)
+	if tpl.Lookup(p.template) == nil {
+		return nil, fmt.Errorf("%s: the template %s specified is not defined", filename, p.template)
 	}
 
-	return page, nil
-}
-
-func generatePage(page *pageMetadata, outDir string) error {
-	if err := fileutil.MkDir(filepath.Join(outDir, filepath.Dir(page.URI))); err != nil {
-		return err
-	}
-
-	var tplBuf, minBuf bytes.Buffer
-	if err := tpl.ExecuteTemplate(&tplBuf, page.template, page); err != nil {
-		return fmt.Errorf("%s: failed to generate: %w", page.URI, err)
-	}
-
-	if err := m.Minify("text/html", &minBuf, &tplBuf); err != nil {
-		return fmt.Errorf("%s: failed to minify: %w", page.URI, err)
-	}
-
-	file, err := os.Create(filepath.Join(outDir, page.URI))
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	if _, err := minBuf.WriteTo(file); err != nil {
-		return fmt.Errorf("%s: failed to write: %w", page.URI, err)
-	}
-
-	return nil
+	return p, nil
 }
 
 func minifyCSS(path string) (template.CSS, error) {
