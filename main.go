@@ -33,11 +33,11 @@ const (
 )
 
 var (
-	tpl         *template.Template
-	m           *minify.M
-	minifiedCSS template.CSS
-	version     string
-	bufpool     *bpool.BufferPool
+	bufpool *bpool.BufferPool
+	m       *minify.M
+	minCSS  template.CSS
+	tpl     *template.Template
+	version string
 )
 
 type page struct {
@@ -52,17 +52,15 @@ type page struct {
 
 func (p *page) Generate(dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
-
 	if err := fileutil.MkDir(dir); err != nil {
 		return err
 	}
 
-	// TODO(astrophena): Maybe don't use defer there?
-
-	tbuf := bufpool.Get()
+	var (
+		tbuf = bufpool.Get()
+		mbuf = bufpool.Get()
+	)
 	defer bufpool.Put(tbuf)
-
-	mbuf := bufpool.Get()
 	defer bufpool.Put(mbuf)
 
 	if err := tpl.ExecuteTemplate(tbuf, p.template, p); err != nil {
@@ -87,8 +85,6 @@ func (p *page) Generate(dst string) (err error) {
 }
 
 func init() {
-	// If version was not already embedded, try to get it from module
-	// version.
 	if version == "" {
 		bi, ok := debug.ReadBuildInfo()
 		if ok {
@@ -98,64 +94,38 @@ func init() {
 		}
 	}
 
-	// Set up minifiers.
 	m = minify.New()
 	m.AddFunc("text/html", html.Minify)
 	m.AddFunc("text/css", css.Minify)
 
-	// Set up buffer pool.
 	bufpool = bpool.NewBufferPool(bufpoolSize)
 }
 
 func main() {
 	app := &cli.App{
 		Name:    "gen",
-		Usage:   "an another static site generator",
+		Usage:   "An another static site generator.",
 		Version: version,
-		Authors: []*cli.Author{
-			{
-				Name:  "Ilya Mateyko",
-				Email: "inbox@astrophena.me",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "source",
+				Aliases: []string{"s", "src"},
+				Usage:   "read files from `DIR`",
+				Value:   ".",
+			},
+			&cli.StringFlag{
+				Name:    "destination",
+				Aliases: []string{"d", "dst"},
+				Usage:   "write files to `DIR`",
+				Value:   "site",
 			},
 		},
 		Commands: []*cli.Command{
 			{
 				Name:    "build",
 				Aliases: []string{"b"},
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:    "src",
-						Aliases: []string{"s"},
-						Usage:   "use sources from `DIR`",
-						Value:   "src",
-					},
-					&cli.StringFlag{
-						Name:    "tpl",
-						Aliases: []string{"t"},
-						Usage:   "use templates from `DIR`",
-						Value:   "tpl",
-					},
-					&cli.StringFlag{
-						Name:    "css",
-						Aliases: []string{"c"},
-						Usage:   "use CSS from `FILE`",
-						Value:   "sitewide.css",
-					},
-					&cli.StringFlag{
-						Name:    "pub",
-						Aliases: []string{"p"},
-						Usage:   "copy files from `DIR`",
-						Value:   "pub",
-					},
-					&cli.StringFlag{
-						Name:    "out",
-						Aliases: []string{"o"},
-						Usage:   "place built files into `DIR`",
-						Value:   "out",
-					},
-				},
-				Usage:  "Build the site",
-				Action: build,
+				Usage:   "Perform a one off site build",
+				Action:  build,
 			},
 			{
 				Name:    "serve",
@@ -167,14 +137,8 @@ func main() {
 						Usage:   "listen on `PORT`",
 						Value:   3000,
 					},
-					&cli.StringFlag{
-						Name:    "dir",
-						Aliases: []string{"d"},
-						Usage:   "serve from `DIR`",
-						Value:   "out",
-					},
 				},
-				Usage:  "Serve site locally",
+				Usage:  "Build site and serve it locally",
 				Action: serve,
 			},
 		},
@@ -188,67 +152,72 @@ func main() {
 
 func build(c *cli.Context) (err error) {
 	var (
-		srcDir = c.String("src")
-		tplDir = c.String("tpl")
-		outDir = c.String("out")
-		pubDir = c.String("pub")
+		src = c.String("source")
+		dst = c.String("destination")
 
-		cssPath = c.String("css")
+		assetsDir    = filepath.Join(src, "assets")
+		contentDir   = filepath.Join(src, "content")
+		templatesDir = filepath.Join(src, "templates")
+		staticDir    = filepath.Join(src, "static")
+
+		css = filepath.Join(assetsDir, "sitewide.css")
 
 		start = time.Now()
 
 		tplFuncs = template.FuncMap{
+			"minCSS": func() template.CSS {
+				return minCSS
+			},
 			"noescape": func(s string) template.HTML {
 				return template.HTML(s)
 			},
 			"strdate": func(ts time.Time) string {
 				return ts.Format("January 2, 2006")
 			},
-			"version": func() string {
-				return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
-			},
-			"minifiedCSS": func() template.CSS {
-				return minifiedCSS
-			},
 			"year": func() int {
 				return time.Now().Year()
+			},
+			"version": func() string {
+				return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 			},
 		}
 	)
 
-	fmt.Printf("Building into %s.\n", outDir)
-
-	if err := fileutil.MkDir(outDir); err != nil {
-		return err
-	}
-
-	if err := fileutil.CopyDirContents(pubDir, outDir); err != nil {
-		return err
-	}
-
-	tpl, err = template.New("main").Funcs(tplFuncs).ParseGlob(tplDir + "/*.html")
+	tpl, err = template.New("main").Funcs(tplFuncs).ParseGlob(templatesDir + "/*.html")
 	if err != nil {
 		return err
 	}
 
-	srcs, err := fileutil.Browse(srcDir, "html")
+	fmt.Printf("Building into %s.\n", dst)
+
+	if err := fileutil.MkDir(dst); err != nil {
+		return err
+	}
+
+	if err := fileutil.CopyDirContents(staticDir, dst); err != nil {
+		return err
+	}
+
+	content, err := fileutil.Browse(contentDir, "html")
 	if err != nil {
 		return err
 	}
 
-	minifiedCSS, err = minifyCSS(cssPath)
-	if err != nil {
-		return err
+	if fileutil.Exists(css) {
+		minCSS, err = minifyCSS(css)
+		if err != nil {
+			return err
+		}
 	}
 
-	for _, src := range srcs {
-		p, err := parseFile(src)
+	for _, f := range content {
+		p, err := parseFile(f)
 		if err != nil {
 			return err
 		}
 
 		if p != nil {
-			if err := p.Generate(outDir); err != nil {
+			if err := p.Generate(dst); err != nil {
 				return err
 			}
 		}
@@ -259,27 +228,23 @@ func build(c *cli.Context) (err error) {
 	return nil
 }
 
-func serve(c *cli.Context) error {
+func serve(c *cli.Context) (err error) {
 	var (
+		dst  = c.String("destination")
 		port = c.Int("port")
-		dir  = c.String("dir")
+
+		srv = &http.Server{
+			Addr:         fmt.Sprintf("localhost:%v", port),
+			WriteTimeout: time.Second * 15,
+			ReadTimeout:  time.Second * 15,
+			IdleTimeout:  time.Second * 15,
+			Handler:      http.FileServer(http.Dir(dst)),
+		}
 	)
 
-	if !fileutil.Exists(dir) {
-		build(c)
-	}
+	build(c)
 
-	handler := http.FileServer(http.Dir(dir))
-
-	srv := &http.Server{
-		Addr:         fmt.Sprintf("localhost:%v", port),
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 15,
-		Handler:      handler,
-	}
-
-	fmt.Printf("Serving %s on port %v.\n", dir, port)
+	fmt.Printf("Serving site on port %v.\n", port)
 	if err := srv.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
 			return err
