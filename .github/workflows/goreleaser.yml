@@ -10,9 +10,8 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v2
-      - name: Unshallow
-        id: unshallow
-        run: git fetch --prune --unshallow
+        with:
+          fetch-depth: 0
       - name: Set up Go
         id: setup-go
         uses: actions/setup-go@v1
