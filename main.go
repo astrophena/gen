@@ -124,7 +124,7 @@ func main() {
 			{
 				Name:    "build",
 				Aliases: []string{"b"},
-				Usage:   "Perform a one off site build",
+				Usage:   "Performs a one off site build",
 				Action:  build,
 			},
 			{
@@ -138,8 +138,14 @@ func main() {
 						Value:   3000,
 					},
 				},
-				Usage:  "Build site and serve it locally",
+				Usage:  "Builds site and serves it locally",
 				Action: serve,
+			},
+			{
+				Name:    "clean",
+				Aliases: []string{"c"},
+				Usage:   "Removes all generated files",
+				Action:  clean,
 			},
 		},
 	}
@@ -189,6 +195,8 @@ func build(c *cli.Context) (err error) {
 	}
 
 	fmt.Printf("Building into %s.\n", dst)
+
+	clean(c)
 
 	if err := fileutil.MkDir(dst); err != nil {
 		return err
@@ -247,6 +255,18 @@ func serve(c *cli.Context) (err error) {
 	fmt.Printf("Serving site on port %v.\n", port)
 	if err := srv.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func clean(c *cli.Context) (err error) {
+	dst := c.String("destination")
+
+	if fileutil.Exists(dst) {
+		if err := os.RemoveAll(dst); err != nil {
 			return err
 		}
 	}
