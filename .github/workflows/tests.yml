@@ -24,3 +24,6 @@ jobs:
         id: build-example-site
         run: ../gen build
         working-directory: ./example
+      - name: Run tests
+        id: run-tests
+        run: make test

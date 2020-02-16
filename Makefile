@@ -8,7 +8,7 @@ VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-p
 APP     = gen
 LDFLAGS = "-s -w -X main.version=$(VERSION) -buildid="
 
-.PHONY: build install clean fmt help
+.PHONY: build install clean fmt test help
 
 build: ## Compile.
 	@ go build -o $(APP) -trimpath -ldflags=$(LDFLAGS)
@@ -22,6 +22,9 @@ clean: ## Remove all generated files.
 
 fmt: ## Reformat sources.
 	@ goimports -w .
+
+test: ## Run tests.
+	@ go test ./...
 
 help: ## Display this help.
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
