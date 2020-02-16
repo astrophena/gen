@@ -86,8 +86,8 @@ func TestFiles(t *testing.T) {
 	// Keep this synced with testdata/files directory.
 	expected := []string{
 		// dot.md is excluded.
-		"testdata/files/jack.txt",
-		"testdata/files/phryne/fisher.txt",
+		filepath.Join(dir, "jack.txt"),
+		filepath.Join(dir, "phryne", "fisher.txt"),
 	}
 
 	returned, err := Files(dir, "txt")
