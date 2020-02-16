@@ -13,22 +13,25 @@ Install the [precompiled binary].
 [Go] 1.13 is required.
 
 ```bash
-$ pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
+pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
 ```
 
 Or:
 
 ```bash
-$ git clone https://github.com/astrophena/gen.git
-$ cd gen
-$ make install # installs by default to $HOME/.local/bin
+git clone https://github.com/astrophena/gen.git
+cd gen
+make install
 ```
+
+`make install` installs by default to `$HOME/.local/bin`. Use `PREFIX`
+environment variable to change that behavior.
 
 ### [Scoop]
 
 ```bash
-$ scoop bucket add gen https://github.com/astrophena/gen.git
-$ scoop install gen
+scoop bucket add gen https://github.com/astrophena/gen.git
+scoop install gen
 ```
 
 ## License
