@@ -52,7 +52,7 @@ type page struct {
 
 func (p *page) Generate(dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
-	if err := fileutil.MkDir(dir); err != nil {
+	if err := fileutil.Mkdir(dir); err != nil {
 		return err
 	}
 
@@ -196,9 +196,11 @@ func build(c *cli.Context) (err error) {
 
 	fmt.Printf("Building into %s.\n", dst)
 
-	clean(c)
+	if err := clean(c); err != nil {
+		return err
+	}
 
-	if err := fileutil.MkDir(dst); err != nil {
+	if err := fileutil.Mkdir(dst); err != nil {
 		return err
 	}
 
@@ -206,7 +208,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	content, err := fileutil.Browse(contentDir, "html")
+	content, err := fileutil.Files(contentDir, "html")
 	if err != nil {
 		return err
 	}
@@ -250,7 +252,9 @@ func serve(c *cli.Context) (err error) {
 		}
 	)
 
-	build(c)
+	if err := build(c); err != nil {
+		return err
+	}
 
 	fmt.Printf("Serving site on port %v.\n", port)
 	if err := srv.ListenAndServe(); err != nil {
