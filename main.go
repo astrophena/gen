@@ -309,9 +309,9 @@ func parseFile(filename string) (*page, error) {
 		case strings.HasPrefix(line, "uri: "):
 			p.URI = line[5:]
 		case strings.HasPrefix(line, "go-import: "):
-			p.GoImport = line[13:]
+			p.GoImport = line[11:]
 		case strings.HasPrefix(line, "go-source: "):
-			p.GoSource = line[13:]
+			p.GoSource = line[11:]
 		}
 	}
 
