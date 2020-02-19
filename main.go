@@ -45,6 +45,8 @@ type page struct {
 	Title       string
 	Description string
 	Body        string
+	GoImport    string
+	GoSource    string
 
 	template string
 	filename string
@@ -306,6 +308,10 @@ func parseFile(filename string) (*page, error) {
 			p.template = line[10:]
 		case strings.HasPrefix(line, "uri: "):
 			p.URI = line[5:]
+		case strings.HasPrefix(line, "go-import: "):
+			p.GoImport = line[13:]
+		case strings.HasPrefix(line, "go-source: "):
+			p.GoSource = line[13:]
 		}
 	}
 
