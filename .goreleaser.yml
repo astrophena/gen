@@ -34,4 +34,4 @@ snapshot:
   # Keep this synced with Makefile.
   name_template: "{{ .Tag }}-{{ .ShortCommit }}"
 changelog:
-  sort: asc
+  skip: true
