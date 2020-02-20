@@ -191,9 +191,26 @@ func build(c *cli.Context) (err error) {
 		}
 	)
 
-	tpl, err = template.New("main").Funcs(tplFuncs).ParseGlob(templatesDir + "/*.html")
+	tpl = template.New("main").Funcs(tplFuncs)
 	if err != nil {
 		return err
+	}
+
+	tpls, err := fileutil.Files(templatesDir, "html")
+	if err != nil {
+		return err
+	}
+
+	for _, t := range tpls {
+		f, err := ioutil.ReadFile(t)
+		if err != nil {
+			return err
+		}
+
+		tpl, err = tpl.Parse(string(f))
+		if err != nil {
+			return err
+		}
 	}
 
 	fmt.Printf("Building into %s.\n", dst)
