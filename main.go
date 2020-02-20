@@ -14,10 +14,10 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
 	"strings"
 	"time"
 
+	"astrophena.me/gen/buildinfo"
 	"astrophena.me/gen/fileutil"
 
 	"github.com/oxtoacart/bpool"
@@ -27,17 +27,13 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-const (
-	develVersion = "(devel)"
-	bufpoolSize  = 48
-)
+const bufpoolSize = 48
 
 var (
 	bufpool *bpool.BufferPool
 	m       *minify.M
 	minCSS  template.CSS
 	tpl     *template.Template
-	version string
 )
 
 type page struct {
@@ -87,15 +83,6 @@ func (p *page) Generate(dst string) (err error) {
 }
 
 func init() {
-	if version == "" {
-		bi, ok := debug.ReadBuildInfo()
-		if ok {
-			version = strings.TrimPrefix(bi.Main.Version, "v")
-		} else {
-			version = develVersion
-		}
-	}
-
 	m = minify.New()
 	m.AddFunc("text/html", html.Minify)
 	m.AddFunc("text/css", css.Minify)
@@ -107,7 +94,7 @@ func main() {
 	app := &cli.App{
 		Name:    "gen",
 		Usage:   "An another static site generator.",
-		Version: version,
+		Version: buildinfo.Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "source",
@@ -186,7 +173,7 @@ func build(c *cli.Context) (err error) {
 				return time.Now().Year()
 			},
 			"version": func() string {
-				return fmt.Sprintf("%s, %s (%s/%s)", version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
+				return fmt.Sprintf("%s, %s (%s/%s)", buildinfo.Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
 			},
 		}
 	)

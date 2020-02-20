@@ -7,7 +7,7 @@ VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-p
 BIN     = gen
 BINDIR  = $(PREFIX)/bin
 
-LDFLAGS = "-s -w -X main.version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X astrophena.me/gen/buildinfo.Version=$(VERSION) -buildid="
 
 .PHONY: build install clean test help
 
