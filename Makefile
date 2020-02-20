@@ -11,7 +11,7 @@ LDFLAGS = "-s -w -X main.version=$(VERSION) -buildid="
 
 .PHONY: build install clean test help
 
-build: ## Compile
+build: ## Build
 	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS)
 
 install: build ## Install
