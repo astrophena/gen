@@ -4,10 +4,8 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    {{ if .Description }}
-    <meta name="description" content="{{ .Description }}">
-    {{ else }}
-    <meta name="description" content="An example site built with gen.">
+    {{ range $name, $content := .MetaTags }}
+    <meta name="{{ $name }}" content="{{ $content }}">
     {{ end }}
     <style>{{ minCSS }}</style>
     <title>{{ .Title }}</title>

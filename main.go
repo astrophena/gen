@@ -41,8 +41,7 @@ type page struct {
 	Title       string
 	Description string
 	Body        string
-	GoImport    string
-	GoSource    string
+	MetaTags    map[string]string
 
 	template string
 	filename string
@@ -297,6 +296,7 @@ func parseFile(filename string) (*page, error) {
 	p := &page{
 		Body:     content[position+len(separator):],
 		filename: filename,
+		MetaTags: make(map[string]string),
 	}
 
 	for _, line := range strings.Split(header, "\n") {
@@ -304,15 +304,14 @@ func parseFile(filename string) (*page, error) {
 		case strings.HasPrefix(line, "title: "):
 			p.Title = line[7:]
 		case strings.HasPrefix(line, "description: "):
-			p.Description = line[13:]
+			p.MetaTags["description"] = line[13:]
 		case strings.HasPrefix(line, "template: "):
 			p.template = line[10:]
 		case strings.HasPrefix(line, "uri: "):
 			p.URI = line[5:]
-		case strings.HasPrefix(line, "go-import: "):
-			p.GoImport = line[11:]
-		case strings.HasPrefix(line, "go-source: "):
-			p.GoSource = line[11:]
+		case strings.HasPrefix(line, "meta-tag: "):
+			t := strings.Split(line[10:], "=")
+			p.MetaTags[t[0]] = t[1]
 		}
 	}
 
