@@ -1,12 +1,12 @@
 {
-    "version": "0.1.10",
+    "version": "0.1.11",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/astrophena/gen/releases/download/v0.1.10/gen_0.1.10_windows_amd64.tar.gz",
+            "url": "https://github.com/astrophena/gen/releases/download/v0.1.11/gen_0.1.11_windows_amd64.tar.gz",
             "bin": [
                 "gen.exe"
             ],
-            "hash": "fcd3d3fed02fd2333bee4432de6ee9074e0da39133f04ae78e03de0cdd86c959"
+            "hash": "51df18d42bd914fe2109ef60a9b94f9ff5d658ab6da5db8db4b766fb40b4b150"
         }
     },
     "homepage": "https://github.com/astrophena/site",
