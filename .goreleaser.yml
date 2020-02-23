@@ -22,7 +22,7 @@ scoop:
     name: gen
   commit_author:
     name: Ilya Mateyko
-    email: git@inbox.astrophena.me
+    email: me@astrophena.me
   homepage: "https://github.com/astrophena/site"
   description: "An another static site generator."
   license: MIT
