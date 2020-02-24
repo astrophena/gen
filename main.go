@@ -158,14 +158,11 @@ func build(c *cli.Context) (err error) {
 		start = time.Now()
 
 		tplFuncs = template.FuncMap{
-			"minCSS": func() template.CSS {
+			"css": func() template.CSS {
 				return minCSS
 			},
-			"noescape": func(s string) template.HTML {
+			"html": func(s string) template.HTML {
 				return template.HTML(s)
-			},
-			"strdate": func(ts time.Time) string {
-				return ts.Format("January 2, 2006")
 			},
 			"year": func() int {
 				return time.Now().Year()
