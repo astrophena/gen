@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -171,9 +170,7 @@ func build(c *cli.Context) (err error) {
 			"year": func() int {
 				return time.Now().Year()
 			},
-			"version": func() string {
-				return fmt.Sprintf("%s, %s (%s/%s)", buildinfo.Version, runtime.Version(), runtime.GOOS, runtime.GOARCH)
-			},
+			"version": buildinfo.TplFunc(),
 		}
 	)
 
