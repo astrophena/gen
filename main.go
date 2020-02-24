@@ -4,6 +4,8 @@
 // license that can be found in the LICENSE.md file.
 
 // An another static site generator.
+//
+// See https://astrophena.me/gen to learn more.
 package main // import "astrophena.me/gen"
 
 import (
@@ -18,6 +20,7 @@ import (
 
 	"astrophena.me/gen/buildinfo"
 	"astrophena.me/gen/fileutil"
+	"astrophena.me/gen/scaffold"
 
 	"github.com/oxtoacart/bpool"
 	"github.com/tdewolff/minify/v2"
@@ -109,6 +112,12 @@ func main() {
 		},
 		Commands: []*cli.Command{
 			{
+				Name:    "new",
+				Aliases: []string{"n"},
+				Usage:   "Creates a new site in the provided directory.",
+				Action:  newSite,
+			},
+			{
 				Name:    "build",
 				Aliases: []string{"b"},
 				Usage:   "Performs a one off site build",
@@ -141,6 +150,20 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func newSite(c *cli.Context) (err error) {
+	path := c.Args().Get(0)
+
+	if path == "" {
+		return fmt.Errorf("directory is not provided")
+	}
+
+	if err := scaffold.Generate(path); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func build(c *cli.Context) (err error) {
