@@ -20,12 +20,6 @@ jobs:
       - name: Build
         id: build
         run: make
-      - name: Build an example site
-        id: build-example-site
-        run: |
-          ./gen new example
-          cd example
-          ../gen build
       - name: Run tests
         id: run-tests
         run: make test
