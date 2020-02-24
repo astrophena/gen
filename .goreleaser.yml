@@ -16,16 +16,6 @@ builds:
       - -trimpath
     ldflags:
       - -s -w -X astrophena.me/gen/buildinfo.Version={{.Version}} -buildid=
-scoop:
-  bucket:
-    owner: astrophena
-    name: gen
-  commit_author:
-    name: Ilya Mateyko
-    email: me@astrophena.me
-  homepage: "https://github.com/astrophena/site"
-  description: "An another static site generator."
-  license: MIT
 archives:
   - format: tar.gz
 checksum:

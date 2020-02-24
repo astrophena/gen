@@ -27,13 +27,6 @@ make install
 `make install` installs by default to `$HOME/.local/bin`. Use `PREFIX`
 environment variable to change that behavior.
 
-### [Scoop]
-
-```bash
-scoop bucket add gen https://github.com/astrophena/gen.git
-scoop install gen
-```
-
 ## License
 
 © 2020 Ilya Mateyko. All rights reserved.
