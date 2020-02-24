@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"astrophena.me/gen/fileutil"
@@ -49,7 +50,8 @@ func fatal(err error) {
 }
 
 func main() {
-	files, err := fileutil.Files(".")
+	dir := filepath.Join(".", "site")
+	files, err := fileutil.Files(dir)
 	if err != nil {
 		fatal(err)
 	}
@@ -64,7 +66,8 @@ func main() {
 			fatal(err)
 		}
 
-		filesMap[filename] = b
+		path := strings.TrimPrefix(filename, "site"+string(os.PathSeparator))
+		filesMap[path] = b
 	}
 
 	var buf bytes.Buffer

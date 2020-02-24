@@ -9,10 +9,13 @@ BINDIR  = $(PREFIX)/bin
 
 LDFLAGS = "-s -w -X astrophena.me/gen/buildinfo.Version=$(VERSION) -buildid="
 
-.PHONY: build install clean test help
+.PHONY: build generate install clean test help
 
 build: ## Build
 	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS)
+
+generate: ## Generate
+	@ go generate ./...
 
 install: build ## Install
 	@ mkdir -m755 -p $(BINDIR) && \
