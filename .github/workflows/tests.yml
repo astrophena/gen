@@ -22,8 +22,9 @@ jobs:
         run: make
       - name: Build an example site
         id: build-example-site
-        run: ../gen build
-        working-directory: ./example
+        run: |
+          ./gen new example
+          pushd example; ../gen build; popd
       - name: Run tests
         id: run-tests
         run: make test
