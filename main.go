@@ -114,8 +114,8 @@ func main() {
 			{
 				Name:    "new",
 				Aliases: []string{"n"},
-				Usage:   "Creates a new site in the provided directory.",
-				Action:  newSite,
+				Usage:   "Creates a new site in the provided directory",
+				Action:  newCmd,
 			},
 			{
 				Name:    "build",
@@ -152,7 +152,7 @@ func main() {
 	}
 }
 
-func newSite(c *cli.Context) (err error) {
+func newCmd(c *cli.Context) (err error) {
 	path := c.Args().Get(0)
 
 	if path == "" {
