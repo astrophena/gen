@@ -1,5 +1,8 @@
 # [gen]
 
+**(Work in Progress)**: `gen` is not finished and has many rough
+edges.
+
 An another static site generator.
 
 Forked from [plop].
@@ -26,6 +29,16 @@ make install
 
 `make install` installs by default to `$HOME/.local/bin`. Use `PREFIX`
 environment variable to change that behavior.
+
+## Getting started
+
+```bash
+gen new example
+cd example
+gen serve
+```
+
+Open your browser at http://localhost:3000.
 
 ## License
 
