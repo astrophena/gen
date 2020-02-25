@@ -154,13 +154,13 @@ func main() {
 }
 
 func newCmd(c *cli.Context) (err error) {
-	path := c.Args().Get(0)
+	dst := c.Args().Get(0)
 
-	if path == "" {
-		return fmt.Errorf("directory is not provided")
+	if dst == "" {
+		return fmt.Errorf("directory is required, but not provided")
 	}
 
-	if err := scaffold.Generate(path); err != nil {
+	if err := scaffold.Create(dst); err != nil {
 		return err
 	}
 

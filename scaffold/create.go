@@ -14,17 +14,17 @@ import (
 
 //go:generate go run generate.go
 
-// New creates a new site in directory dst or returns an error.
-func New(dst string) (err error) {
-	for filename, content := range files {
-		path := filepath.Join(dst, filename)
+// Create creates a new site in directory dst or returns an error.
+func Create(dst string) (err error) {
+	for name, contents := range files {
+		path := filepath.Join(dst, name)
 
 		dir := filepath.Dir(path)
 		if err := fileutil.Mkdir(dir); err != nil {
 			return err
 		}
 
-		if err := ioutil.WriteFile(path, content, 0644); err != nil {
+		if err := ioutil.WriteFile(path, contents, 0644); err != nil {
 			return err
 		}
 	}
