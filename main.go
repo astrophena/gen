@@ -34,7 +34,7 @@ const bufpoolSize = 48
 var (
 	bufpool *bpool.BufferPool
 	m       *minify.M
-	minCSS  template.CSS
+	minCSS  string
 	tpl     *template.Template
 )
 
@@ -44,6 +44,7 @@ type page struct {
 	Description string
 	Body        string
 	MetaTags    map[string]string
+	CSS         string
 
 	template string
 	filename string
@@ -181,8 +182,8 @@ func build(c *cli.Context) (err error) {
 		start = time.Now()
 
 		tplFuncs = template.FuncMap{
-			"css": func() template.CSS {
-				return minCSS
+			"css": func(s string) template.CSS {
+				return template.CSS(s)
 			},
 			"html": func(s string) template.HTML {
 				return template.HTML(s)
@@ -314,6 +315,7 @@ func parseFile(filename string) (*page, error) {
 		Body:     content[position+len(separator):],
 		filename: filename,
 		MetaTags: make(map[string]string),
+		CSS:      minCSS,
 	}
 
 	for _, line := range strings.Split(header, "\n") {
@@ -343,7 +345,7 @@ func parseFile(filename string) (*page, error) {
 	return p, nil
 }
 
-func minifyCSS(path string) (template.CSS, error) {
+func minifyCSS(path string) (css string, err error) {
 	if !fileutil.Exists(path) {
 		return "", fmt.Errorf("%s: no such file", path)
 	}
@@ -358,5 +360,5 @@ func minifyCSS(path string) (template.CSS, error) {
 		return "", fmt.Errorf("%s: failed to minify: %w", path, err)
 	}
 
-	return template.CSS(s), nil
+	return string(s), nil
 }

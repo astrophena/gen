@@ -7,7 +7,7 @@
     {{ range $name, $content := .MetaTags }}
     <meta name="{{ $name }}" content="{{ $content }}">
     {{ end }}
-    <style>{{ css }}</style>
+    <style>{{ css .CSS }}</style>
     <title>{{ .Title }}</title>
   </head>
   <body>
