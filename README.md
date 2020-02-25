@@ -1,6 +1,6 @@
 # [gen]
 
-**(Work in Progress)**: `gen` is not finished and has many rough
+**Work in Progress**: `gen` is not finished and has many rough
 edges.
 
 An another static site generator.
