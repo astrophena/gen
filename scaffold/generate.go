@@ -32,14 +32,11 @@ var (
 
 package scaffold // import "astrophena.me/gen/scaffold"
 
-var files = make(map[string][]byte)
-
-func init() {
-	{{range $filename, $content := . -}}
-	files["{{ $filename }}"] = {{ printf "%#v" $content }}
+var files = map[string][]byte{
+	{{ range $filename, $content := . -}}
+	{{ printf "%#v" $filename }}: {{ printf "%#v" $content }},
 	{{ end -}}
-}
-`))
+}`))
 
 	filesMap = make(map[string][]byte)
 )

@@ -195,7 +195,7 @@ func build(c *cli.Context) (err error) {
 		}
 	)
 
-	tpl = template.New("main").Funcs(tplFuncs)
+	tpl = template.New("").Funcs(tplFuncs)
 
 	tpls, err := fileutil.Files(templatesDir, "html")
 	if err != nil {
