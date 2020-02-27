@@ -11,5 +11,5 @@ package main // import "astrophena.me/gen"
 import "astrophena.me/gen/cli"
 
 func main() {
-	cli.Parse()
+	cli.Run()
 }

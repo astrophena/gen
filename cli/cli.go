@@ -92,7 +92,7 @@ func init() {
 	bufpool = bpool.NewBufferPool(bufpoolSize)
 }
 
-// Parse parses command line arguments.
+// Run invokes command line interface of gen.
 func Parse() {
 	app := &cli.App{
 		Name:    "gen",
