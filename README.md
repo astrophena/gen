@@ -1,10 +1,7 @@
-# `gen`
-
+<center><h1>`gen`</h1></center>
 
 > **Work in Progress**: `gen` is not finished and has many rough
 > edges.
-
-> Forked from [plop].
 
 An another static site generator.
 
@@ -58,6 +55,10 @@ Two installation options are supported:
 
 ## License
 
+> [gen] is forked from [plop].
+>
+> ---
+>
 > © 2020 Ilya Mateyko. All rights reserved.
 >
 > © 2019 Frédéric Guillot. All rights reserved.
@@ -65,7 +66,7 @@ Two installation options are supported:
 > Use of this source code is governed by the MIT license that can be
 > found in the [LICENSE.md] file.
 
-[plop]: https://github.com/fguillot/plop
 [releases page]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org/dl
+[plop]: https://github.com/fguillot/plop
 [LICENSE.md]: LICENSE.md
