@@ -9,31 +9,29 @@ An another static site generator.
 
 ## Installation
 
-Install the [precompiled binary].
+Download the precompiled binary from [releases page].
 
 ### From source
 
-[Go] 1.14 is required.
+Install [Go] 1.14 if you haven't yet.
 
-```bash
-pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
-```
+Two installation options are supported:
 
-Or:
+1. Install with `go get`:
 
-```bash
-git clone https://github.com/astrophena/gen.git
-cd gen
-make install
-```
+        $ pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
 
-`make install` installs `gen`  by default to `$HOME/.local/bin`.
+2. Install with `make`:
 
-Use `PREFIX` environment variable to change that behavior:
+        $ git clone https://github.com/astrophena/gen.git
+        $ cd gen
+        $ make install
 
-```bash
-make install PREFIX="$HOME" # Installs to $HOME/bin.
-```
+    `make install` installs `gen`  by default to `$HOME/.local/bin`.
+
+    Use `PREFIX` environment variable to change that behavior:
+
+        $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
 ## Getting Started
 
@@ -54,14 +52,14 @@ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
 ## License
 
-© 2020 Ilya Mateyko. All rights reserved.
-
-© 2019 Frédéric Guillot. All rights reserved.
-
-Use of this source code is governed by the MIT license that can be
-found in the [LICENSE.md] file.
+> © 2020 Ilya Mateyko. All rights reserved.
+>
+> © 2019 Frédéric Guillot. All rights reserved.
+>
+> Use of this source code is governed by the MIT license that can be
+> found in the [LICENSE.md] file.
 
 [plop]: https://github.com/fguillot/plop
-[precompiled binary]: https://github.com/astrophena/gen/releases
-[Go]: https://golang.org
+[releases page]: https://github.com/astrophena/gen/releases
+[Go]: https://golang.org/dl
 [LICENSE.md]: LICENSE.md
