@@ -22,8 +22,7 @@ import (
 
 const name = "files.go"
 
-var (
-	tpl = template.Must(template.New("").Parse(`// © 2020 Ilya Mateyko. All rights reserved.
+var tpl = template.Must(template.New("").Parse(`// © 2020 Ilya Mateyko. All rights reserved.
 // © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
@@ -33,13 +32,10 @@ var (
 package scaffold // import "astrophena.me/gen/scaffold"
 
 var files = map[string][]byte{
-	{{ range $filename, $content := . -}}
-	{{ printf "%#v" $filename }}: {{ printf "%#v" $content }},
+	{{ range $file, $content := . -}}
+	{{ printf "%#v" $file }}: {{ printf "%#v" $content }},
 	{{ end -}}
 }`))
-
-	filesMap = make(map[string][]byte)
-)
 
 func fatal(err error) {
 	fmt.Println(err)
@@ -48,28 +44,31 @@ func fatal(err error) {
 
 func main() {
 	dir := filepath.Join(".", "site")
+
 	files, err := fileutil.Files(dir)
 	if err != nil {
 		fatal(err)
 	}
 
-	for _, filename := range files {
-		if filepath.Ext(filename) == ".go" {
+	fmap := make(map[string][]byte)
+
+	for _, file := range files {
+		if filepath.Ext(file) == ".go" {
 			continue
 		}
 
-		b, err := ioutil.ReadFile(filename)
+		b, err := ioutil.ReadFile(file)
 		if err != nil {
 			fatal(err)
 		}
 
-		path := strings.TrimPrefix(filename, "site"+string(os.PathSeparator))
-		filesMap[path] = b
+		p := strings.TrimPrefix(file, "site"+string(os.PathSeparator))
+		fmap[p] = b
 	}
 
 	var buf bytes.Buffer
 
-	if err := tpl.ExecuteTemplate(&buf, "", filesMap); err != nil {
+	if err := tpl.ExecuteTemplate(&buf, "", fmap); err != nil {
 		fatal(err)
 	}
 
