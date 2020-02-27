@@ -1,4 +1,4 @@
-<center><h1>`gen`</h1></center>
+# `gen`
 
 > **Work in Progress**: `gen` is not finished and has many rough
 > edges.
@@ -21,7 +21,7 @@ Two installation options are supported:
 
 2. Install with `make`:
 
-        $ git clone https://github.com/astrophena/gen.git
+        $ git clone https://github.com/astrophena/gen
         $ cd gen
         $ make install
 
@@ -55,7 +55,7 @@ Two installation options are supported:
 
 ## License
 
-> [gen] is forked from [plop].
+> `gen` is forked from [plop].
 >
 > ---
 >
