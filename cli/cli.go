@@ -93,7 +93,7 @@ func init() {
 }
 
 // Run invokes command line interface of gen.
-func Parse() {
+func Run() {
 	app := &cli.App{
 		Name:    "gen",
 		Usage:   "An another static site generator.",
