@@ -53,9 +53,8 @@ Two installation options are supported:
 
 ## Code Status
 
-![[Tests](https://github.com/astrophena/gen/actions?query=workflow%3ATests)](https://github.com/astrophena/gen/workflows/Tests/badge.svg)
-
-![[GoReleaser](https://github.com/astrophena/gen/actions?query=workflow%3AGoReleaser)](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)
+[![Tests](https://github.com/astrophena/gen/workflows/Tests/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3ATests)
+[![GoReleaser](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3AGoReleaser)
 
 ## License
 
