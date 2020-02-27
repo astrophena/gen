@@ -1,5 +1,6 @@
 # `gen`
 
+
 > **Work in Progress**: `gen` is not finished and has many rough
 > edges.
 
@@ -49,6 +50,12 @@ Two installation options are supported:
     Run with `--help` or `-h` for options.
 
 4. Go to `http://localhost:3000`.
+
+## Code Status
+
+![[Tests](https://github.com/astrophena/gen/actions?query=workflow%3ATests)](https://github.com/astrophena/gen/workflows/Tests/badge.svg)
+
+![[GoReleaser](https://github.com/astrophena/gen/actions?query=workflow%3AGoReleaser)](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)
 
 ## License
 
