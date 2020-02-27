@@ -17,7 +17,7 @@ An another static site generator.
 
 2. Create a new site:
 
-        $ gen new mysite
+        $ gen create mysite
 
 3. Change directory to `mysite` and serve the site locally:
 
