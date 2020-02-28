@@ -27,3 +27,9 @@ jobs:
       - name: Run tests
         id: run-tests
         run: make test
+      - name: Test site creation
+        id: test-site-creation
+        run: |
+          ./gen new example
+          cd example
+          ../gen build
