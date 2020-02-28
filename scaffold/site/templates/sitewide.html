@@ -4,10 +4,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    {{ range $name, $content := .MetaTags }}
+    {{ range $name, $content := .MetaTags -}}
     <meta name="{{ $name }}" content="{{ $content }}">
-    {{ end }}
+    {{ end -}}
+    {{ if .CSS -}}
     <style>{{ css .CSS }}</style>
+    {{ end -}}
     <title>{{ .Title }}</title>
   </head>
   <body>

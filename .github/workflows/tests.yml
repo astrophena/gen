@@ -27,3 +27,10 @@ jobs:
       - name: Run tests
         id: run-tests
         run: make test
+      - name: Test site creation
+        id: test-site-creation
+        run: |
+          ./gen create example
+          cd example
+          ../gen build
+        shell: bash
