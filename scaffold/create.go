@@ -16,7 +16,7 @@ import (
 
 // Create creates a new site in directory dst or returns an error.
 func Create(dst string) (err error) {
-	for name, contents := range files {
+	for name, content := range files {
 		path := filepath.Join(dst, name)
 
 		dir := filepath.Dir(path)
@@ -24,7 +24,7 @@ func Create(dst string) (err error) {
 			return err
 		}
 
-		if err := ioutil.WriteFile(path, contents, 0644); err != nil {
+		if err := ioutil.WriteFile(path, content, 0644); err != nil {
 			return err
 		}
 	}
