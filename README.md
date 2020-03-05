@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/astrophena/gen)](LICENSE.md)
 [![Go](https://img.shields.io/github/go-mod/go-version/astrophena/gen)](https://golang.org)
-[![Release](https://img.shields.io/github/v/release/astrophena/gen)](https://github.com/astrophena/gen/releases)
+[![Release](https://img.shields.io/github/v/release/astrophena/gen?include_prereleases)](https://github.com/astrophena/gen/releases)
 [![Tests](https://github.com/astrophena/gen/workflows/Tests/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3ATests)
 [![GoReleaser](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3AGoReleaser)
 
