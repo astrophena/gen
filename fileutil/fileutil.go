@@ -85,7 +85,7 @@ func Files(dir string, exts ...string) (files []string, err error) {
 		if len(exts) > 0 {
 			var extMatches bool
 			for _, ext := range exts {
-				if filepath.Ext(path) != ext {
+				if filepath.Ext(path) == ext {
 					extMatches = true
 				}
 			}
