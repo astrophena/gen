@@ -106,7 +106,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	tpls, err := fileutil.Files(templatesDir, "html")
+	tpls, err := fileutil.Files(templatesDir, ".html")
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	content, err := fileutil.Files(contentDir, "html")
+	content, err := fileutil.Files(contentDir, ".html", ".md")
 	if err != nil {
 		return err
 	}
