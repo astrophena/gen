@@ -106,7 +106,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	tpls, err := fileutil.Files(templatesDir, "html")
+	tpls, err := fileutil.Files(templatesDir, ".html")
 	if err != nil {
 		return err
 	}
