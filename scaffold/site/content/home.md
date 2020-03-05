@@ -1,3 +1,4 @@
+---
 title: Welcome to gen!
 template: sitewide
 uri: index.html
