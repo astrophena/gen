@@ -90,7 +90,7 @@ func TestFiles(t *testing.T) {
 		filepath.Join(dir, "phryne", "fisher.txt"),
 	}
 
-	returned, err := Files(dir, "txt")
+	returned, err := Files(dir, ".txt")
 	if err != nil {
 		t.Error(err)
 	}
