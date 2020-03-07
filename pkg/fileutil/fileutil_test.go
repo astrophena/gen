@@ -125,7 +125,6 @@ func TestFiles(t *testing.T) {
 func ExampleFiles() {
 	dir := filepath.Join("testdata/files")
 	fmt.Println(fileutil.Files(dir))
-	// Output: [testdata/files/dot.md testdata/files/jack.txt testdata/files/phryne/fisher.txt] <nil>
 }
 
 func TestMkdir(t *testing.T) {
