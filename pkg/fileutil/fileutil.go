@@ -5,7 +5,7 @@
 
 // Package fileutil provides helper functions for working with files
 // and directories.
-package fileutil // import "astrophena.me/gen/fileutil"
+package fileutil // import "astrophena.me/gen/pkg/fileutil"
 
 import (
 	"io"
@@ -82,8 +82,14 @@ func Files(dir string, exts ...string) (files []string, err error) {
 			return nil
 		}
 
-		for _, ext := range exts {
-			if !strings.HasSuffix(path, "."+ext) {
+		if len(exts) > 0 {
+			var extMatches bool
+			for _, ext := range exts {
+				if filepath.Ext(path) == ext {
+					extMatches = true
+				}
+			}
+			if !extMatches {
 				return nil
 			}
 		}

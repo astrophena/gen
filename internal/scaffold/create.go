@@ -3,13 +3,13 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-package scaffold // import "astrophena.me/gen/scaffold"
+package scaffold // import "astrophena.me/gen/internal/scaffold"
 
 import (
 	"io/ioutil"
 	"path/filepath"
 
-	"astrophena.me/gen/fileutil"
+	"astrophena.me/gen/pkg/fileutil"
 )
 
 //go:generate go run generate.go

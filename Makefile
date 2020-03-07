@@ -1,13 +1,10 @@
-# Install by default to $HOME/.local
 PREFIX  ?= $(HOME)/.local
-# Default version format
-# Example: 0.1.2-c91f0d3
-VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-$(shell git rev-parse --short HEAD)
+VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
 
 BIN     = gen
 BINDIR  = $(PREFIX)/bin
 
-LDFLAGS = "-s -w -X astrophena.me/gen/buildinfo.Version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -buildid="
 
 .PHONY: build generate install clean test help
 
@@ -21,7 +18,7 @@ install: build ## Install
 	@ mkdir -m755 -p $(BINDIR) && \
 		install -m755 $(BIN) $(BINDIR)
 
-clean: ## Remove generated files
+clean: ## Clean
 	@ rm -f $(BIN)
 
 test: ## Run tests

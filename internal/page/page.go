@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package page implements page parsing and generation.
-package page // import "astrophena.me/gen/page"
+package page // import "astrophena.me/gen/internal/page"
 
 import (
 	"bytes"
@@ -16,9 +16,10 @@ import (
 	"strings"
 	"time"
 
-	"astrophena.me/gen/buildinfo"
-	"astrophena.me/gen/fileutil"
+	"astrophena.me/gen/internal/buildinfo"
+	"astrophena.me/gen/pkg/fileutil"
 
+	"github.com/russross/blackfriday/v2"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/html"
@@ -32,8 +33,15 @@ var (
 		"css": func(s string) template.CSS {
 			return template.CSS(s)
 		},
-		"html": func(s string) template.HTML {
-			return template.HTML(s)
+		"content": func(p *Page) template.HTML {
+			var c string
+			switch p.Ext {
+			case ".md":
+				c = string(blackfriday.Run([]byte(p.Body)))
+			default:
+				c = p.Body
+			}
+			return template.HTML(c)
 		},
 		"year": func() int {
 			return time.Now().Year()
@@ -56,6 +64,7 @@ type Page struct {
 	Title       string
 	Description string
 	MetaTags    map[string]string
+	Ext         string
 
 	Body string
 
@@ -117,6 +126,7 @@ func ParseFile(src string, css string) (*Page, error) {
 		MetaTags: make(map[string]string),
 		CSS:      css,
 		src:      src,
+		Ext:      filepath.Ext(src),
 	}
 
 	for _, line := range strings.Split(header, "\n") {

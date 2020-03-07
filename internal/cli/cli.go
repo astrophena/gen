@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package cli implements command line interface.
-package cli // import "astrophena.me/gen/cli"
+package cli // import "astrophena.me/gen/internal/cli"
 
 import (
 	"fmt"
@@ -13,10 +13,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"astrophena.me/gen/buildinfo"
-	"astrophena.me/gen/fileutil"
-	"astrophena.me/gen/page"
-	"astrophena.me/gen/scaffold"
+	"astrophena.me/gen/internal/buildinfo"
+	"astrophena.me/gen/internal/page"
+	"astrophena.me/gen/internal/scaffold"
+	"astrophena.me/gen/pkg/fileutil"
 
 	"github.com/urfave/cli/v2"
 )
@@ -106,7 +106,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	tpls, err := fileutil.Files(templatesDir, "html")
+	tpls, err := fileutil.Files(templatesDir, ".html")
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func build(c *cli.Context) (err error) {
 		return err
 	}
 
-	content, err := fileutil.Files(contentDir, "html")
+	content, err := fileutil.Files(contentDir, ".html", ".md")
 	if err != nil {
 		return err
 	}

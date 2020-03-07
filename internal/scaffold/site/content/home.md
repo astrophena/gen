@@ -1,9 +1,9 @@
+---
 title: Welcome to gen!
 template: sitewide
 uri: index.html
 description: New site built with gen.
 ---
-<p>
-  This is a new site built with
-  <a href="https://github.com/astrophena/gen">gen</a>.
-</p>
+This is a new site built with [gen].
+
+[gen]: https://astrophena.me/gen

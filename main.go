@@ -8,7 +8,7 @@
 // See https://astrophena.me/gen to learn more.
 package main // import "astrophena.me/gen"
 
-import "astrophena.me/gen/cli"
+import "astrophena.me/gen/internal/cli"
 
 func main() {
 	cli.Run()

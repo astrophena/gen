@@ -3,37 +3,45 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-package fileutil // import "astrophena.me/gen/fileutil"
+package fileutil_test
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	"astrophena.me/gen/pkg/fileutil"
 )
 
 func TestCopyDirContents(t *testing.T) {
 	f1 := filepath.Join("testdata", "files")
 	f2 := filepath.Join("testdata", "files2")
 
-	if Exists(f2) {
+	if fileutil.Exists(f2) {
 		if err := os.RemoveAll(f2); err != nil {
 			t.Error(err)
 		}
 	}
 
-	if err := CopyDirContents(f1, f2); err != nil {
+	if err := fileutil.CopyDirContents(f1, f2); err != nil {
 		t.Error(err)
 	}
 
-	// TODO(astrophena): Compare two directories.
-
-	if Exists(f2) {
+	if fileutil.Exists(f2) {
 		if err := os.RemoveAll(f2); err != nil {
 			t.Error(err)
 		}
+	}
+}
+
+func ExampleCopyDirContents() {
+	if err := fileutil.CopyDirContents("phryne", "fisher"); err != nil {
+		log.Fatal(err)
 	}
 }
 
@@ -41,13 +49,13 @@ func TestCopyFile(t *testing.T) {
 	f1 := filepath.Join("testdata", "copyfile.txt")
 	f2 := filepath.Join("testdata", "copyfile2.txt")
 
-	if Exists(f2) {
+	if fileutil.Exists(f2) {
 		if err := os.RemoveAll(f2); err != nil {
 			t.Error(err)
 		}
 	}
 
-	if err := CopyFile(f1, f2); err != nil {
+	if err := fileutil.CopyFile(f1, f2); err != nil {
 		t.Error(err)
 	}
 
@@ -65,18 +73,32 @@ func TestCopyFile(t *testing.T) {
 		t.Errorf("%s and %s are not equal", b1, b2)
 	}
 
-	if Exists(f2) {
+	if fileutil.Exists(f2) {
 		if err := os.RemoveAll(f2); err != nil {
 			t.Error(err)
 		}
 	}
 }
 
+func ExampleCopyFile() {
+	if err := fileutil.CopyFile("/etc/hostname", "/tmp/hostname"); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func TestExists(t *testing.T) {
 	dir := filepath.Join("testdata", "exists")
 
-	if Exists(dir) {
+	if fileutil.Exists(dir) {
 		t.Errorf("%s shouldn't exist", dir)
+	}
+}
+
+func ExampleExists() {
+	if fileutil.Exists("example") {
+		fmt.Println("example exists")
+	} else {
+		fmt.Println("no example!")
 	}
 }
 
@@ -84,40 +106,52 @@ func TestFiles(t *testing.T) {
 	dir := filepath.Join("testdata", "files")
 
 	// Keep this synced with testdata/files directory.
-	expected := []string{
+	exp := []string{
 		// dot.md is excluded.
 		filepath.Join(dir, "jack.txt"),
 		filepath.Join(dir, "phryne", "fisher.txt"),
 	}
 
-	returned, err := Files(dir, "txt")
+	ret, err := fileutil.Files(dir, ".txt")
 	if err != nil {
 		t.Error(err)
 	}
 
-	if !reflect.DeepEqual(expected, returned) {
-		t.Errorf("expected %s, but returned %s", expected, returned)
+	if !reflect.DeepEqual(exp, ret) {
+		t.Errorf("expected %s, but returned %s", exp, ret)
 	}
+}
+
+func ExampleFiles() {
+	dir := filepath.Join("testdata/files")
+	fmt.Println(fileutil.Files(dir))
+	// Output: [testdata/files/dot.md testdata/files/jack.txt testdata/files/phryne/fisher.txt] <nil>
 }
 
 func TestMkdir(t *testing.T) {
 	dir := filepath.Join("testdata", "mkdir")
 
-	if Exists(dir) {
+	if fileutil.Exists(dir) {
 		t.Errorf("%s shouldn't exist", dir)
 	}
 
-	if err := Mkdir(dir); err != nil {
+	if err := fileutil.Mkdir(dir); err != nil {
 		t.Error(err)
 	}
 
-	if !Exists(dir) {
+	if !fileutil.Exists(dir) {
 		t.Errorf("%s should exist", dir)
 	}
 
-	if Exists(dir) {
+	if fileutil.Exists(dir) {
 		if err := os.RemoveAll(dir); err != nil {
 			t.Error(err)
 		}
+	}
+}
+
+func ExampleMkdir() {
+	if err := fileutil.Mkdir("example"); err != nil {
+		log.Fatal(err)
 	}
 }
