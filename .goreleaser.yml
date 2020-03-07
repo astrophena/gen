@@ -3,7 +3,8 @@ before:
   hooks:
     - go mod tidy
 builds:
-  - env:
+  - main: ./cmd/gen
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -15,13 +16,13 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X astrophena.me/gen/buildinfo.Version={{.Version}} -buildid=
+      - -s -w -X astrophena.me/gen/internal/buildinfo.Version={{.Version}} -buildid=
 archives:
   - format: binary
 checksum:
   name_template: 'checksums.txt'
 snapshot:
   # Keep this synced with Makefile.
-  name_template: "{{ .Tag }}-{{ .ShortCommit }}"
+  name_template: "{{ .Tag }}-next"
 changelog:
   skip: true

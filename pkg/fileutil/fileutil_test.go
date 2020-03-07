@@ -15,7 +15,7 @@ import (
 	"reflect"
 	"testing"
 
-	"astrophena.me/gen/fileutil"
+	"astrophena.me/gen/pkg/fileutil"
 )
 
 func TestCopyDirContents(t *testing.T) {
@@ -106,24 +106,26 @@ func TestFiles(t *testing.T) {
 	dir := filepath.Join("testdata", "files")
 
 	// Keep this synced with testdata/files directory.
-	expected := []string{
+	exp := []string{
 		// dot.md is excluded.
 		filepath.Join(dir, "jack.txt"),
 		filepath.Join(dir, "phryne", "fisher.txt"),
 	}
 
-	returned, err := fileutil.Files(dir, ".txt")
+	ret, err := fileutil.Files(dir, ".txt")
 	if err != nil {
 		t.Error(err)
 	}
 
-	if !reflect.DeepEqual(expected, returned) {
-		t.Errorf("expected %s, but returned %s", expected, returned)
+	if !reflect.DeepEqual(exp, ret) {
+		t.Errorf("expected %s, but returned %s", exp, ret)
 	}
 }
 
 func ExampleFiles() {
-	fmt.Println(fileutil.Files("example"))
+	dir := filepath.Join("testdata/files")
+	fmt.Println(fileutil.Files(dir))
+	// Output: [testdata/files/dot.md testdata/files/jack.txt testdata/files/phryne/fisher.txt] <nil>
 }
 
 func TestMkdir(t *testing.T) {
