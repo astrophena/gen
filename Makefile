@@ -9,7 +9,7 @@ LDFLAGS = "-s -w -X astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -bui
 .PHONY: build generate install clean test help
 
 build: ## Build
-	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS) astrophena.me/gen/cmd/gen
+	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS) ./cmd/gen
 
 generate: ## Generate
 	@ go generate ./...
