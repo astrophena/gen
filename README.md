@@ -40,7 +40,7 @@ Download the precompiled binary from [releases page].
 
     * Install with `go get`:
 
-            $ pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen/cmd/gen; popd
+            $ pushd $(mktemp -d); go mod init tmp; go get astrophena.me/gen; popd
 
       `go get` puts binaries by default to `$GOPATH/bin` (e.g.
       `~/go/bin`).
