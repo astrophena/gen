@@ -4,4 +4,4 @@
 // license that can be found in the LICENSE.md file.
 
 // Package pack implements asset bundling.
-package pack // import "astrophena.me/gen/pack"
+package pack // import "astrophena.me/gen/internal/pack"
