@@ -5,3 +5,22 @@
 
 // Package pack implements asset bundling.
 package pack // import "astrophena.me/gen/internal/pack"
+
+import (
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/css"
+	"github.com/tdewolff/minify/v2/html"
+)
+
+var minifierFuncs = map[string]minify.MinifierFunc{
+	"text/html": html.Minify,
+	"text/css":  css.Minify,
+}
+
+func minifier() *minify.M {
+	m := minify.New()
+	for t, f := range minifierFuncs {
+		m.AddFunc(t, f)
+	}
+	return m
+}
