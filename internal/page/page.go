@@ -17,18 +17,16 @@ import (
 	"time"
 
 	"astrophena.me/gen/internal/buildinfo"
+	"astrophena.me/gen/internal/pack"
 	"astrophena.me/gen/pkg/fileutil"
 
 	"github.com/russross/blackfriday/v2"
-	"github.com/tdewolff/minify/v2"
-	"github.com/tdewolff/minify/v2/css"
-	"github.com/tdewolff/minify/v2/html"
 )
 
 var (
-	m   *minify.M
-	tpl *template.Template
+	m = pack.Minifier()
 
+	tpl      = template.New("").Funcs(tplFuncs)
 	tplFuncs = template.FuncMap{
 		"css": func(s string) template.CSS {
 			return template.CSS(s)
@@ -49,14 +47,6 @@ var (
 		"version": buildinfo.TplFunc(),
 	}
 )
-
-func init() {
-	m = minify.New()
-	m.AddFunc("text/html", html.Minify)
-	m.AddFunc("text/css", css.Minify)
-
-	tpl = template.New("").Funcs(tplFuncs)
-}
 
 // Page represents a parsed page.
 type Page struct {

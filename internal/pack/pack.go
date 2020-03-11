@@ -17,7 +17,8 @@ var minifierFuncs = map[string]minify.MinifierFunc{
 	"text/css":  css.Minify,
 }
 
-func minifier() *minify.M {
+// Minifier returns a configured minifier.
+func Minifier() *minify.M {
 	m := minify.New()
 	for t, f := range minifierFuncs {
 		m.AddFunc(t, f)
