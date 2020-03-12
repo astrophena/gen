@@ -3,8 +3,8 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// Package fileutil provides helper functions for working with files
-// and directories.
+// Package fileutil provides helper functions
+// for working with files and directories.
 package fileutil // import "astrophena.me/gen/pkg/fileutil"
 
 import (
@@ -14,8 +14,9 @@ import (
 	"strings"
 )
 
-// CopyDirContents recursively copies contents of the src directory to dst
-// or returns an error otherwise.
+// CopyDirContents recursively copies contents
+// of the src directory to dst or returns an
+// error otherwise.
 func CopyDirContents(src, dst string) (err error) {
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		sp := strings.TrimPrefix(path, src+string(os.PathSeparator))
@@ -38,8 +39,9 @@ func CopyDirContents(src, dst string) (err error) {
 	})
 }
 
-// CopyFile copies the src file to dst or returns an error otherwise. Any
-// existing file will be overwritten and it will not copy file attributes.
+// CopyFile copies the src file to dst or returns
+// an error otherwise. Any existing file will be
+// overwritten and it will not copy file attributes.
 func CopyFile(src, dst string) (err error) {
 	in, err := os.Open(src)
 	if err != nil {
@@ -60,8 +62,8 @@ func CopyFile(src, dst string) (err error) {
 	return out.Close()
 }
 
-// Exists returns true if a file or directory exists and false
-// otherwise.
+// Exists returns true if a file or directory
+// exists and false otherwise.
 func Exists(path string) (exists bool) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
@@ -69,9 +71,10 @@ func Exists(path string) (exists bool) {
 	return true
 }
 
-// Files returns a slice of file paths in the directory dir recursively, with
-// file extensions exts, or an error otherwise. If no file extensions are
-// supplied, all files are returned.
+// Files returns a slice of files in the directory dir
+// recursively, with file extensions exts, or an error.
+// If no file extensions are supplied, all files are
+// returned.
 func Files(dir string, exts ...string) (files []string, err error) {
 	return files, filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -100,8 +103,9 @@ func Files(dir string, exts ...string) (files []string, err error) {
 	})
 }
 
-// Mkdir creates the directory, if it do not already exist or returns an error
-// otherwise. It also creates parent directories as needed.
+// Mkdir creates the directory, if it do not already
+// exist or returns an error. It also creates parent
+// directories as needed.
 func Mkdir(dir string) (err error) {
 	if !Exists(dir) {
 		return os.MkdirAll(dir, 0755)
