@@ -18,6 +18,16 @@ builds:
       - -s -w -X astrophena.me/gen/internal/buildinfo.Version={{.Version}} -buildid=
 archives:
   - format: binary
+nfpms:
+  - package_name: gen
+    vendor: Ilya Mateyko
+    homepage: https://astrophena.me/gen
+    maintainer: Ilya Mateyko <me@astrophena.me>
+    description: An another static site generator.
+    license: MIT
+    formats:
+      - deb
+    bindir: /usr/bin
 checksum:
   name_template: 'checksums.txt'
 snapshot:

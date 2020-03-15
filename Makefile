@@ -11,7 +11,7 @@ BINDIR  = $(PREFIX)/bin
 
 LDFLAGS = "-s -w -X astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -buildid="
 
-.PHONY: build generate install clean test help
+.PHONY: build generate install clean test dist help
 
 build: ## Build
 	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS)
@@ -28,6 +28,9 @@ clean: ## Clean
 
 test: ## Run tests
 	@ go test ./...
+
+dist: ## Build with GoReleaser
+	@ goreleaser --snapshot --skip-publish
 
 help: ## Show help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
