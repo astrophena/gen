@@ -18,25 +18,24 @@ import (
 	"astrophena.me/gen/pkg/fileutil"
 )
 
+func remove(t *testing.T, f string) func() {
+	return func() {
+		if fileutil.Exists(f) {
+			if err := os.RemoveAll(f); err != nil {
+				t.Error(err)
+			}
+		}
+	}
+}
+
 func TestCopyDirContents(t *testing.T) {
 	f1 := filepath.Join("testdata", "files")
 	f2 := filepath.Join("testdata", "files2")
 
-	if fileutil.Exists(f2) {
-		if err := os.RemoveAll(f2); err != nil {
-			t.Error(err)
-		}
-	}
-
 	if err := fileutil.CopyDirContents(f1, f2); err != nil {
 		t.Error(err)
 	}
-
-	if fileutil.Exists(f2) {
-		if err := os.RemoveAll(f2); err != nil {
-			t.Error(err)
-		}
-	}
+	t.Cleanup(remove(t, f2))
 }
 
 func ExampleCopyDirContents() {
@@ -49,15 +48,10 @@ func TestCopyFile(t *testing.T) {
 	f1 := filepath.Join("testdata", "copyfile.txt")
 	f2 := filepath.Join("testdata", "copyfile2.txt")
 
-	if fileutil.Exists(f2) {
-		if err := os.RemoveAll(f2); err != nil {
-			t.Error(err)
-		}
-	}
-
 	if err := fileutil.CopyFile(f1, f2); err != nil {
 		t.Error(err)
 	}
+	t.Cleanup(remove(t, f2))
 
 	b1, err := ioutil.ReadFile(f1)
 	if err != nil {
@@ -71,12 +65,6 @@ func TestCopyFile(t *testing.T) {
 
 	if !bytes.Equal(b1, b2) {
 		t.Errorf("%s and %s are not equal", b1, b2)
-	}
-
-	if fileutil.Exists(f2) {
-		if err := os.RemoveAll(f2); err != nil {
-			t.Error(err)
-		}
 	}
 }
 
@@ -130,22 +118,13 @@ func ExampleFiles() {
 func TestMkdir(t *testing.T) {
 	dir := filepath.Join("testdata", "mkdir")
 
-	if fileutil.Exists(dir) {
-		t.Errorf("%s shouldn't exist", dir)
-	}
-
 	if err := fileutil.Mkdir(dir); err != nil {
 		t.Error(err)
 	}
+	t.Cleanup(remove(t, dir))
 
 	if !fileutil.Exists(dir) {
 		t.Errorf("%s should exist", dir)
-	}
-
-	if fileutil.Exists(dir) {
-		if err := os.RemoveAll(dir); err != nil {
-			t.Error(err)
-		}
 	}
 }
 

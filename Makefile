@@ -9,9 +9,11 @@ VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
 BIN     = gen
 BINDIR  = $(PREFIX)/bin
 
+DISTDIR = ./dist
+
 LDFLAGS = "-s -w -X astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -buildid="
 
-.PHONY: build generate install clean test help
+.PHONY: build generate install clean test dist help
 
 build: ## Build
 	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS)
@@ -24,10 +26,13 @@ install: build ## Install
 		install -m755 $(BIN) $(BINDIR)
 
 clean: ## Clean
-	@ rm -f $(BIN)
+	@ rm -rf $(BIN) $(DISTDIR)
 
 test: ## Run tests
 	@ go test ./...
+
+dist: ## Build with GoReleaser
+	@ goreleaser --snapshot --skip-publish
 
 help: ## Show help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
