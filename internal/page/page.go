@@ -18,6 +18,7 @@ import (
 
 	"astrophena.me/gen/internal/buildinfo"
 	"astrophena.me/gen/pkg/fileutil"
+	"gopkg.in/yaml.v2"
 
 	"github.com/russross/blackfriday/v2"
 	"github.com/tdewolff/minify/v2"
@@ -60,31 +61,33 @@ func init() {
 
 // Page represents a parsed page.
 type Page struct {
-	URI         string
-	Title       string
-	Description string
-	MetaTags    map[string]string
+	src         string
 	Ext         string
+	Body        string
+	CSS         string
+	Frontmatter *Frontmatter
+}
 
-	Body string
-
-	CSS string
-
-	template string
-	src      string
+// Frontmatter represents a page frontmatter.
+type Frontmatter struct {
+	URI         string            `yaml:"uri"`
+	Title       string            `yaml:"title"`
+	Description string            `yaml:"description"`
+	MetaTags    map[string]string `yaml:"meta_tags"`
+	Template    string            `yaml:"template"`
 }
 
 // Generate generates HTML from a parsed page and writes it to dst, returning
 // an error otherwise.
 func (p *Page) Generate(dst string) (err error) {
-	dir := filepath.Join(dst, filepath.Dir(p.URI))
+	dir := filepath.Join(dst, filepath.Dir(p.Frontmatter.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
 		return err
 	}
 
 	var tbuf, mbuf bytes.Buffer
 
-	if err := tpl.ExecuteTemplate(&tbuf, p.template, p); err != nil {
+	if err := tpl.ExecuteTemplate(&tbuf, p.Frontmatter.Template, p); err != nil {
 		return err
 	}
 
@@ -92,7 +95,7 @@ func (p *Page) Generate(dst string) (err error) {
 		return err
 	}
 
-	f, err := os.Create(filepath.Join(dst, p.URI))
+	f, err := os.Create(filepath.Join(dst, p.Frontmatter.URI))
 	if err != nil {
 		return err
 	}
@@ -120,37 +123,25 @@ func ParseFile(src string, css string) (*Page, error) {
 		return nil, fmt.Errorf("%s: no header section detected", src)
 	}
 
-	header := content[:position]
+	frontmatter := content[:position]
 	p := &Page{
-		Body:     content[position+len(separator):],
-		MetaTags: make(map[string]string),
-		CSS:      css,
-		src:      src,
-		Ext:      filepath.Ext(src),
+		Body:        content[position+len(separator):],
+		CSS:         css,
+		src:         src,
+		Ext:         filepath.Ext(src),
+		Frontmatter: &Frontmatter{MetaTags: make(map[string]string)},
 	}
 
-	for _, line := range strings.Split(header, "\n") {
-		switch {
-		case strings.HasPrefix(line, "title: "):
-			p.Title = line[7:]
-		case strings.HasPrefix(line, "description: "):
-			p.MetaTags["description"] = line[13:]
-		case strings.HasPrefix(line, "template: "):
-			p.template = line[10:]
-		case strings.HasPrefix(line, "uri: "):
-			p.URI = line[5:]
-		case strings.HasPrefix(line, "meta-tag: "):
-			t := strings.Split(line[10:], "=")
-			p.MetaTags[t[0]] = t[1]
-		}
+	if err := yaml.Unmarshal([]byte(frontmatter), p.Frontmatter); err != nil {
+		return nil, err
 	}
 
-	if p.Title == "" || p.template == "" || p.URI == "" {
-		return nil, fmt.Errorf("%s: missing required header parameter (title, template, uri)", src)
+	if p.Frontmatter.Title == "" || p.Frontmatter.Template == "" || p.Frontmatter.URI == "" {
+		return nil, fmt.Errorf("%s: missing required frontmatter parameter (title, template, uri)", src)
 	}
 
-	if tpl.Lookup(p.template) == nil {
-		return nil, fmt.Errorf("%s: the template %s specified is not defined", src, p.template)
+	if tpl.Lookup(p.Frontmatter.Template) == nil {
+		return nil, fmt.Errorf("%s: the template %s specified is not defined", src, p.Frontmatter.Template)
 	}
 
 	return p, nil
