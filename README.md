@@ -1,5 +1,7 @@
 # `gen`
 
+![Screenshot](https://user-images.githubusercontent.com/58525038/76977760-cc092500-6946-11ea-8662-f4fb8a690187.png)
+
 [![License](https://img.shields.io/github/license/astrophena/gen)](LICENSE.md)
 [![Go](https://img.shields.io/github/go-mod/go-version/astrophena/gen)](https://golang.org)
 [![Release](https://img.shields.io/github/v/release/astrophena/gen?include_prereleases)](https://github.com/astrophena/gen/releases)
