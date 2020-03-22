@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package cli implements command line interface.
-package cli // import "astrophena.me/gen/internal/cli"
+package cli // import "go.astrophena.me/gen/internal/cli"
 
 import (
 	"fmt"
@@ -13,10 +13,10 @@ import (
 	"path/filepath"
 	"time"
 
-	"astrophena.me/gen/internal/buildinfo"
-	"astrophena.me/gen/internal/page"
-	"astrophena.me/gen/internal/scaffold"
-	"astrophena.me/gen/pkg/fileutil"
+	"go.astrophena.me/gen/internal/buildinfo"
+	"go.astrophena.me/gen/internal/page"
+	"go.astrophena.me/gen/internal/scaffold"
+	"go.astrophena.me/gen/pkg/fileutil"
 
 	"github.com/urfave/cli/v2"
 )

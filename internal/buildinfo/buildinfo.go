@@ -4,7 +4,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package buildinfo contains build information.
-package buildinfo // import "astrophena.me/gen/internal/buildinfo"
+package buildinfo // import "go.astrophena.me/gen/internal/buildinfo"
 
 import (
 	"runtime/debug"

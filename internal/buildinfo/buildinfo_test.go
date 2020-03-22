@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"astrophena.me/gen/internal/buildinfo"
+	"go.astrophena.me/gen/internal/buildinfo"
 )
 
 func TestTplFunc(t *testing.T) {
