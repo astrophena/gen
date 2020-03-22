@@ -1,17 +1,35 @@
 # `gen`
 
-![Screenshot](https://user-images.githubusercontent.com/58525038/76977760-cc092500-6946-11ea-8662-f4fb8a690187.png)
-
-[![License](https://img.shields.io/github/license/astrophena/gen)](LICENSE.md)
-[![Go](https://img.shields.io/github/go-mod/go-version/astrophena/gen)](https://golang.org)
-[![Release](https://img.shields.io/github/v/release/astrophena/gen?include_prereleases)](https://github.com/astrophena/gen/releases)
-[![Tests](https://github.com/astrophena/gen/workflows/Tests/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3ATests)
-[![GoReleaser](https://github.com/astrophena/gen/workflows/GoReleaser/badge.svg)](https://github.com/astrophena/gen/actions?query=workflow%3AGoReleaser)
-
 > **Work in Progress**: `gen` is not finished and has many rough
 > edges.
 
 An another static site generator.
+
+```
+~ $ gen
+NAME:
+   gen - An another static site generator.
+
+USAGE:
+   gen [global options] command [command options] [arguments...]
+
+VERSION:
+   0.2.4
+
+COMMANDS:
+   build, b   Performs a one off site build
+   create, c  Creates a new site in the provided directory
+   serve, s   Builds site and serves it locally
+   remove, r  Removes all generated files
+   help, h    Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --source DIR, -s DIR, --src DIR       read files from DIR (default: ".")
+   --destination DIR, -d DIR, --dst DIR  write files to DIR (default: "site")
+   --help, -h                            show help (default: false)
+   --version, -v                         print the version (default: false)
+~ $
+```
 
 ## Getting Started
 
@@ -32,6 +50,8 @@ An another static site generator.
 
 ## Installation
 
+### From binary
+
 Download the precompiled binary from [releases page].
 
 ### From source
@@ -47,7 +67,7 @@ Download the precompiled binary from [releases page].
       `go get` puts binaries by default to `$GOPATH/bin` (e.g.
       `~/go/bin`).
 
-      Use `GOBIN` environment variable to change that behavior.
+      Use `GOBIN` environment variable to change this behavior.
 
     * Install with `make`:
 
@@ -57,24 +77,14 @@ Download the precompiled binary from [releases page].
 
         `make install` installs `gen`  by default to `$HOME/.local/bin`.
 
-        Use `PREFIX` environment variable to change that behavior:
+        Use `PREFIX` environment variable to change this behavior:
 
             $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
 ## License
 
-> `gen` is forked from [plop].
->
-> ---
->
-> © 2020 Ilya Mateyko. All rights reserved.
->
-> © 2019 Frédéric Guillot. All rights reserved.
->
-> Use of this source code is governed by the MIT license that can be
-> found in the [LICENSE.md] file.
+[MIT].
 
 [releases page]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org/dl
-[plop]: https://github.com/fguillot/plop
-[LICENSE.md]: LICENSE.md
+[MIT]: LICENSE.md
