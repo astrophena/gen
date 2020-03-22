@@ -11,7 +11,7 @@ BINDIR  = $(PREFIX)/bin
 
 DISTDIR = ./dist
 
-LDFLAGS = "-s -w -X astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X go.astrophena.me/gen/internal/buildinfo.Version=$(VERSION) -buildid="
 
 .PHONY: build generate install clean test dist help
 

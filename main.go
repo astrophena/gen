@@ -3,12 +3,10 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// An another static site generator.
-//
-// See https://astrophena.me/gen to learn more.
-package main // import "astrophena.me/gen"
+// gen is an another static site generator.
+package main // import "go.astrophena.me/gen"
 
-import "astrophena.me/gen/internal/cli"
+import "go.astrophena.me/gen/internal/cli"
 
 func main() {
 	cli.Run()
