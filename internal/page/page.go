@@ -90,7 +90,7 @@ func ParseFile(tpl *template.Template, src string) (*Page, error) {
 	case ".md":
 		p.Content = string(blackfriday.Run([]byte(content)))
 	default:
-		return nil, fmt.Errorf("%s: format doesn't supported")
+		return nil, fmt.Errorf("%s: format doesn't supported", src)
 	}
 
 	if err := yaml.Unmarshal([]byte(frontmatter), p); err != nil {
