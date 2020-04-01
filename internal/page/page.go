@@ -25,9 +25,8 @@ import (
 
 // Page represents a page.
 type Page struct {
-	Ext         string            `yaml:"-"`
-	Content     string            `yaml:"-"`
 	URI         string            `yaml:"uri"`
+	Content     string            `yaml:"-"`
 	Title       string            `yaml:"title"`
 	Description string            `yaml:"description"`
 	MetaTags    map[string]string `yaml:"meta_tags"`
@@ -69,19 +68,29 @@ func ParseFile(tpl *template.Template, src string) (*Page, error) {
 		return nil, err
 	}
 
-	content := string(b)
+	all := string(b)
 
 	separator := "\n---\n"
-	position := strings.Index(content, separator)
+	position := strings.Index(all, separator)
 	if position <= 0 {
 		return nil, fmt.Errorf("%s: no header section detected", src)
 	}
 
-	frontmatter := content[:position]
+	frontmatter := all[:position]
 	p := &Page{
-		Content:  content[position+len(separator):],
-		Ext:      filepath.Ext(src),
 		MetaTags: make(map[string]string),
+	}
+
+	ext := filepath.Ext(src)
+	content := all[position+len(separator):]
+
+	switch ext {
+	case ".html":
+		p.Content = content
+	case ".md":
+		p.Content = string(blackfriday.Run([]byte(content)))
+	default:
+		return nil, fmt.Errorf("%s: format doesn't supported", src)
 	}
 
 	if err := yaml.Unmarshal([]byte(frontmatter), p); err != nil {
@@ -104,14 +113,7 @@ func ParseFile(tpl *template.Template, src string) (*Page, error) {
 func Template() *template.Template {
 	return template.New("").Funcs(template.FuncMap{
 		"content": func(p *Page) template.HTML {
-			var c string
-			switch p.Ext {
-			case ".md":
-				c = string(blackfriday.Run([]byte(p.Content)))
-			default:
-				c = p.Content
-			}
-			return template.HTML(c)
+			return template.HTML(p.Content)
 		},
 		"year": func() int {
 			return time.Now().Year()
