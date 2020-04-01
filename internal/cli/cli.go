@@ -102,7 +102,7 @@ func buildCmd(c *cli.Context) (err error) {
 
 	for _, dir := range dirs {
 		if !fileutil.Exists(dir) && dir != "static" {
-			return fmt.Errorf("\"%s\" doesn't exist.\nThis directory is required for building a site.", dir)
+			return fmt.Errorf("%s: doesn't exist, this directory is required for building a site.", dir)
 		}
 	}
 
