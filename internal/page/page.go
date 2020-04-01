@@ -16,10 +16,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/russross/blackfriday/v2"
 	"go.astrophena.me/gen/internal/version"
 	"go.astrophena.me/gen/pkg/fileutil"
 
+	"github.com/russross/blackfriday/v2"
 	"gopkg.in/yaml.v2"
 )
 
