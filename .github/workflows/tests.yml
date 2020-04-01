@@ -30,7 +30,7 @@ jobs:
       - name: Test site creation
         id: test-site-creation
         run: |
-          ./gen create example
+          ./gen new example
           cd example
           ../gen build
         shell: bash

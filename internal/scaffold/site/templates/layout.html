@@ -1,0 +1,18 @@
+{{ define "layout" -}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {{ range $name, $content := .MetaTags -}}
+    <meta name="{{ $name }}" content="{{ $content }}">
+    {{ end -}}
+    <link rel="stylesheet" href="/sitewide.css">
+    <title>{{ .Title }}</title>
+  </head>
+  <body>
+    <h1>{{ .Title }}</h1>
+    {{ content . -}}
+  </body>
+</html>
+{{ end -}}
