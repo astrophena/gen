@@ -6,8 +6,16 @@
 // gen is an another static site generator.
 package main // import "go.astrophena.me/gen"
 
-import "go.astrophena.me/gen/internal/cli"
+import (
+	"fmt"
+	"os"
+
+	"go.astrophena.me/gen/internal/cli"
+)
 
 func main() {
-	cli.Run()
+	if err := cli.Run(os.Args); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

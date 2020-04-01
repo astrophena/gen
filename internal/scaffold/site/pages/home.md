@@ -1,6 +1,6 @@
 ---
 title: Welcome to gen!
-template: sitewide
+template: layout
 uri: index.html
 description: New site built with gen.
 ---

@@ -3,7 +3,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// Package cli implements command line interface.
+// Package cli implements the command line interface of gen.
 package cli // import "go.astrophena.me/gen/internal/cli"
 
 import (
@@ -13,22 +13,25 @@ import (
 	"path/filepath"
 	"time"
 
-	"go.astrophena.me/gen/internal/buildinfo"
 	"go.astrophena.me/gen/internal/page"
 	"go.astrophena.me/gen/internal/scaffold"
+	"go.astrophena.me/gen/internal/version"
 	"go.astrophena.me/gen/pkg/fileutil"
 
 	"github.com/urfave/cli/v2"
 )
 
-var minCSS string
+// Run invokes the command line interface of gen.
+func Run(args []string) (err error) {
+	return App().Run(args)
+}
 
-// Run invokes command line interface.
-func Run() {
-	app := &cli.App{
+// App returns the structure of the command line interface of gen.
+func App() *cli.App {
+	return &cli.App{
 		Name:    "gen",
 		Usage:   "An another static site generator.",
-		Version: buildinfo.Version,
+		Version: version.Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "source",
@@ -47,127 +50,114 @@ func Run() {
 			{
 				Name:    "build",
 				Aliases: []string{"b"},
-				Usage:   "Performs a one off site build",
-				Action:  build,
+				Usage:   "Perform a one-off site build",
+				Action:  buildCmd,
 			},
 			{
-				Name:    "create",
+				Name:    "clean",
 				Aliases: []string{"c"},
-				Usage:   "Creates a new site in the provided directory",
-				Action:  create,
+				Usage:   "Remove all generated files",
+				Action:  cleanCmd,
 			},
 			{
-				Name:    "serve",
+				Name:    "server",
 				Aliases: []string{"s"},
 				Flags: []cli.Flag{
 					&cli.IntFlag{
 						Name:    "port",
 						Aliases: []string{"p"},
-						Usage:   "listen on `PORT`",
+						Usage:   "serve at `PORT`",
 						Value:   3000,
 					},
 				},
-				Usage:  "Builds site and serves it locally",
-				Action: serve,
+				Usage:  "Start local HTTP server",
+				Action: serverCmd,
 			},
 			{
-				Name:    "remove",
-				Aliases: []string{"r"},
-				Usage:   "Removes all generated files",
-				Action:  remove,
+				Name:    "new",
+				Aliases: []string{"n"},
+				Usage:   "Create a new site",
+				Action:  newCmd,
 			},
 		},
 	}
-
-	if err := app.Run(os.Args); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 }
 
-func build(c *cli.Context) (err error) {
+// buildCmd implements the "build" command.
+func buildCmd(c *cli.Context) (err error) {
 	var (
 		src = c.String("source")
 		dst = c.String("destination")
 
-		assetsDir    = filepath.Join(src, "assets")
-		contentDir   = filepath.Join(src, "content")
-		templatesDir = filepath.Join(src, "templates")
-		staticDir    = filepath.Join(src, "static")
-
-		css = filepath.Join(assetsDir, "sitewide.css")
-
-		start = time.Now()
+		dirs = map[string]string{
+			"pages":     filepath.Join(src, "pages"),
+			"templates": filepath.Join(src, "templates"),
+			"static":    filepath.Join(src, "static"),
+		}
 	)
 
-	fmt.Printf("Building into %s.\n", dst)
-
-	if err := remove(c); err != nil {
+	if err := cleanCmd(c); err != nil {
 		return err
 	}
 
-	tpls, err := fileutil.Files(templatesDir, ".html")
-	if err != nil {
-		return err
-	}
-
-	if err := page.ParseTemplates(tpls); err != nil {
-		return err
+	for _, dir := range dirs {
+		if !fileutil.Exists(dir) && dir != "static" {
+			return fmt.Errorf("\"%s\" doesn't exist.\nThis directory is required for building a site.", dir)
+		}
 	}
 
 	if err := fileutil.Mkdir(dst); err != nil {
 		return err
 	}
 
-	if err := fileutil.CopyDirContents(staticDir, dst); err != nil {
-		return err
+	if fileutil.Exists(dirs["static"]) {
+		if err := fileutil.CopyDirContents(dirs["static"], dst); err != nil {
+			return err
+		}
 	}
 
-	content, err := fileutil.Files(contentDir, ".html", ".md")
+	tpls, err := fileutil.Files(dirs["templates"], ".html")
 	if err != nil {
 		return err
 	}
 
-	if fileutil.Exists(css) {
-		minCSS, err = page.Minify("text/css", css)
+	tpl, err := page.ParseTemplates(page.Template(), tpls)
+	if err != nil {
+		return err
+	}
+
+	pages, err := fileutil.Files(dirs["pages"], ".html", ".md")
+	if err != nil {
+		return err
+	}
+
+	for _, pg := range pages {
+		pg, err := page.ParseFile(tpl, pg)
 		if err != nil {
 			return err
 		}
-	}
 
-	for _, f := range content {
-		p, err := page.ParseFile(f, minCSS)
-		if err != nil {
-			return err
-		}
-
-		if p != nil {
-			if err := p.Generate(dst); err != nil {
-				return err
-			}
+		if pg != nil {
+			return pg.Generate(tpl, dst)
 		}
 	}
-
-	fmt.Printf("Built in %v.\n", time.Since(start))
 
 	return nil
 }
 
-func create(c *cli.Context) (err error) {
+// newCmd implements the "new" command.
+func newCmd(c *cli.Context) (err error) {
 	dst := c.Args().Get(0)
 
 	if dst == "" {
 		return fmt.Errorf("directory is required, but not provided")
 	}
 
-	if err := scaffold.Create(dst); err != nil {
-		return err
-	}
-
-	return nil
+	return scaffold.Create(dst)
 }
 
-func serve(c *cli.Context) (err error) {
+// serverCmd implements the "server" command.
+func serverCmd(c *cli.Context) (err error) {
 	var (
 		dst  = c.String("destination")
 		port = c.Int("port")
@@ -181,11 +171,7 @@ func serve(c *cli.Context) (err error) {
 		}
 	)
 
-	if err := build(c); err != nil {
-		return err
-	}
-
-	fmt.Printf("Serving on port %v.\n", port)
+	fmt.Printf("Listening on a port %v...\nUse Ctrl+C to stop.\n", port)
 	if err := srv.ListenAndServe(); err != nil {
 		if err != http.ErrServerClosed {
 			return err
@@ -195,13 +181,12 @@ func serve(c *cli.Context) (err error) {
 	return nil
 }
 
-func remove(c *cli.Context) (err error) {
+// cleanCmd implements the "clean" command.
+func cleanCmd(c *cli.Context) (err error) {
 	dst := c.String("destination")
 
 	if fileutil.Exists(dst) {
-		if err := os.RemoveAll(dst); err != nil {
-			return err
-		}
+		return os.RemoveAll(dst)
 	}
 
 	return nil

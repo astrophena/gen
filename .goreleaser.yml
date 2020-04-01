@@ -15,7 +15,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X go.astrophena.me/gen/internal/buildinfo.Version={{.Version}} -buildid=
+      - -s -w -X go.astrophena.me/gen/internal/version.Version={{.Version}} -buildid=
 archives:
   - format: binary
 nfpms:
