@@ -1,10 +1,5 @@
 # `gen`
 
-> **Work in Progress**: `gen` is not finished and has many rough
-> edges.
-
-An another static site generator.
-
 ```
 ~ $ gen
 NAME:
@@ -14,13 +9,13 @@ USAGE:
    gen [global options] command [command options] [arguments...]
 
 VERSION:
-   0.2.4
+   0.3.1
 
 COMMANDS:
-   build, b   Performs a one off site build
-   create, c  Creates a new site in the provided directory
-   serve, s   Builds site and serves it locally
-   remove, r  Removes all generated files
+   build, b   Perform a one-off site build
+   clean, c   Remove all generated files
+   server, s  Start local HTTP server
+   new, n     Create a new site
    help, h    Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
@@ -31,18 +26,22 @@ GLOBAL OPTIONS:
 ~ $
 ```
 
+> **Work in Progress**: `gen` is not finished and has many rough
+> edges.
+
 ## Getting Started
 
 1. [Install](#installation) gen if you haven't yet.
 
 2. Create a new site:
 
-        $ gen create mysite
+        $ gen new mysite
 
-3. Change directory to `mysite` and serve the site locally:
+3. Change directory to `mysite`, build and serve the site locally:
 
         $ cd mysite
-        $ gen serve
+        $ gen build
+        $ gen server
 
     Run with `--help` or `-h` for options.
 
