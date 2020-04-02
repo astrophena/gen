@@ -34,7 +34,8 @@ type Page struct {
 }
 
 // Generate generates HTML from a Page and writes
-// it to dst, returning an error otherwise.
+// it to the file by the path dst, returning an
+// error otherwise.
 func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
@@ -60,31 +61,30 @@ func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	return nil
 }
 
-// ParseFile parses a source file and returns Page
-// or an error.
-func ParseFile(tpl *template.Template, src string) (*Page, error) {
+// Parse parses a file and returns Page or an error.
+func Parse(tpl *template.Template, src string) (*Page, error) {
 	b, err := ioutil.ReadFile(src)
 	if err != nil {
 		return nil, err
 	}
 
+	// TODO(astrophena): Improve frontmatter detection code.
 	all := string(b)
 
 	separator := "\n---\n"
 	position := strings.Index(all, separator)
 	if position <= 0 {
-		return nil, fmt.Errorf("%s: no header section detected", src)
+		return nil, fmt.Errorf("%s: no frontmatter detected", src)
 	}
 
 	frontmatter := all[:position]
+	content := all[position+len(separator):]
+
 	p := &Page{
 		MetaTags: make(map[string]string),
 	}
 
-	ext := filepath.Ext(src)
-	content := all[position+len(separator):]
-
-	switch ext {
+	switch filepath.Ext(src) {
 	case ".html":
 		p.Content = content
 	case ".md":
@@ -108,8 +108,7 @@ func ParseFile(tpl *template.Template, src string) (*Page, error) {
 	return p, nil
 }
 
-// Template returns a *template.Template
-// that is used for generating pages.
+// Template returns a *template.Template that is used for generating pages.
 func Template() *template.Template {
 	return template.New("").Funcs(template.FuncMap{
 		"content": func(p *Page) template.HTML {
@@ -125,7 +124,7 @@ func Template() *template.Template {
 }
 
 // ParseTemplates parses tpls into a tpl, returning
-// back tpl or an error otherwise.
+// it back or an error.
 func ParseTemplates(tpl *template.Template, tpls []string) (*template.Template, error) {
 	for _, t := range tpls {
 		f, err := ioutil.ReadFile(t)
