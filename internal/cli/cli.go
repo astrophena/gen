@@ -94,28 +94,35 @@ func buildCmd(c *cli.Context) (err error) {
 			"templates": filepath.Join(src, "templates"),
 			"static":    filepath.Join(src, "static"),
 		}
+
+		start = time.Now()
 	)
 
+	// Remove previously generated files.
 	if err := cleanCmd(c); err != nil {
 		return err
 	}
 
+	// Check if the required directories exist.
 	for _, dir := range dirs {
 		if !fileutil.Exists(dir) && dir != "static" {
 			return fmt.Errorf("%s: doesn't exist, this directory is required for building a site", dir)
 		}
 	}
 
+	// Create the build directory.
 	if err := fileutil.Mkdir(dst); err != nil {
 		return err
 	}
 
+	// Copy static files.
 	if fileutil.Exists(dirs["static"]) {
 		if err := fileutil.CopyDirContents(dirs["static"], dst); err != nil {
 			return err
 		}
 	}
 
+	// Parse templates.
 	tpls, err := fileutil.Files(dirs["templates"], ".html")
 	if err != nil {
 		return err
@@ -126,11 +133,17 @@ func buildCmd(c *cli.Context) (err error) {
 		return err
 	}
 
+	// Parse and generate pages.
 	pages, err := fileutil.Files(dirs["pages"], ".html", ".md")
 	if err != nil {
 		return err
 	}
 
+	if len(pages) == 1 {
+		fmt.Printf("Parsing and generating %d page...\n", len(pages))
+	} else {
+		fmt.Printf("Parsing and generating %d pages...\n", len(pages))
+	}
 	for _, pg := range pages {
 		pg, err := page.ParseFile(tpl, pg)
 		if err != nil {
@@ -138,9 +151,13 @@ func buildCmd(c *cli.Context) (err error) {
 		}
 
 		if pg != nil {
-			return pg.Generate(tpl, dst)
+			if err := pg.Generate(tpl, dst); err != nil {
+				return err
+			}
 		}
 	}
+
+	fmt.Printf("Successfully built in %v.\n", time.Since(start))
 
 	return nil
 }
