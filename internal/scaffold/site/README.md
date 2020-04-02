@@ -6,9 +6,10 @@ This is a new site built with `gen`.
 
 1. Install [gen] if you haven't yet.
 
-2. Serve the site locally:
+2. Build and serve the site locally:
 
-        $ gen serve
+        $ gen build
+        $ gen server
 
     Run with `--help` or `-h` for options.
 

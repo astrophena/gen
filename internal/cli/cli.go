@@ -10,11 +10,10 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 
-	"go.astrophena.me/gen/internal/page"
 	"go.astrophena.me/gen/internal/scaffold"
+	"go.astrophena.me/gen/internal/site"
 	"go.astrophena.me/gen/internal/version"
 	"go.astrophena.me/gen/pkg/fileutil"
 
@@ -29,9 +28,10 @@ func Run(args []string) (err error) {
 // App returns the structure of the command line interface of gen.
 func App() *cli.App {
 	return &cli.App{
-		Name:    "gen",
-		Usage:   "An another static site generator.",
-		Version: version.Version,
+		Name:            "gen",
+		Usage:           "An another static site generator.",
+		Version:         version.Version,
+		HideHelpCommand: true,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "source",
@@ -88,78 +88,9 @@ func buildCmd(c *cli.Context) (err error) {
 	var (
 		src = c.String("source")
 		dst = c.String("destination")
-
-		dirs = map[string]string{
-			"pages":     filepath.Join(src, "pages"),
-			"templates": filepath.Join(src, "templates"),
-			"static":    filepath.Join(src, "static"),
-		}
-
-		start = time.Now()
 	)
 
-	// Remove previously generated files.
-	if err := cleanCmd(c); err != nil {
-		return err
-	}
-
-	// Check if the required directories exist.
-	for _, dir := range dirs {
-		if !fileutil.Exists(dir) && dir != "static" {
-			return fmt.Errorf("%s: doesn't exist, this directory is required for building a site", dir)
-		}
-	}
-
-	// Create the build directory.
-	if err := fileutil.Mkdir(dst); err != nil {
-		return err
-	}
-
-	// Copy static files.
-	if fileutil.Exists(dirs["static"]) {
-		if err := fileutil.CopyDirContents(dirs["static"], dst); err != nil {
-			return err
-		}
-	}
-
-	// Parse templates.
-	tpls, err := fileutil.Files(dirs["templates"], ".html")
-	if err != nil {
-		return err
-	}
-
-	tpl, err := page.ParseTemplates(page.Template(), tpls)
-	if err != nil {
-		return err
-	}
-
-	// Parse and generate pages.
-	pages, err := fileutil.Files(dirs["pages"], ".html", ".md")
-	if err != nil {
-		return err
-	}
-
-	if len(pages) == 1 {
-		fmt.Printf("Parsing and generating %d page...\n", len(pages))
-	} else {
-		fmt.Printf("Parsing and generating %d pages...\n", len(pages))
-	}
-	for _, pg := range pages {
-		pg, err := page.ParseFile(tpl, pg)
-		if err != nil {
-			return err
-		}
-
-		if pg != nil {
-			if err := pg.Generate(tpl, dst); err != nil {
-				return err
-			}
-		}
-	}
-
-	fmt.Printf("Successfully built in %v.\n", time.Since(start))
-
-	return nil
+	return site.Build(src, dst)
 }
 
 // newCmd implements the "new" command.
@@ -167,7 +98,7 @@ func newCmd(c *cli.Context) (err error) {
 	dst := c.Args().Get(0)
 
 	if dst == "" {
-		return fmt.Errorf("directory is required, but not provided")
+		return fmt.Errorf("new: directory is required, but not provided")
 	}
 
 	return scaffold.Create(dst)
@@ -187,6 +118,10 @@ func serverCmd(c *cli.Context) (err error) {
 			Handler:      http.FileServer(http.Dir(dst)),
 		}
 	)
+
+	if !fileutil.Exists(dst) {
+		return fmt.Errorf("%s: doesn't exist, run \"gen build\" to build the site", dst)
+	}
 
 	fmt.Printf("Listening on a port %v...\nUse Ctrl+C to stop.\n", port)
 	if err := srv.ListenAndServe(); err != nil {
