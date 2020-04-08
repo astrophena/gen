@@ -13,10 +13,14 @@ import (
 	"testing"
 
 	"go.astrophena.me/gen/internal/page"
+	"go.astrophena.me/gen/pkg/fileutil"
 )
 
 func testTpl(t *testing.T) *template.Template {
-	tpls := []string{filepath.Join("testdata", "layout.html")}
+	tpls, err := fileutil.Files("testdata", ".html")
+	if err != nil {
+		t.Error(err)
+	}
 
 	tpl, err := page.ParseTemplates(page.Template(), tpls)
 	if err != nil {
