@@ -1,33 +1,9 @@
 # `gen`
 
-```
-~ $ gen
-NAME:
-   gen - An another static site generator.
+> **Work in Progress**: `gen` is not finished and has many, many
+> rough edges. I don't know when `gen` will be finished. Maybe never.
 
-USAGE:
-   gen [global options] command [command options] [arguments...]
-
-VERSION:
-   0.3.1
-
-COMMANDS:
-   build, b   Perform a one-off site build
-   clean, c   Remove all generated files
-   server, s  Start local HTTP server
-   new, n     Create a new site
-   help, h    Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --source DIR, -s DIR, --src DIR       read files from DIR (default: ".")
-   --destination DIR, -d DIR, --dst DIR  write files to DIR (default: "site")
-   --help, -h                            show help (default: false)
-   --version, -v                         print the version (default: false)
-~ $
-```
-
-> **Work in Progress**: `gen` is not finished and has many rough
-> edges.
+`gen` is an another static site generator.
 
 ## Getting Started
 
@@ -61,7 +37,7 @@ Download the precompiled binary from [releases page].
 
     * Install with `go get`:
 
-            $ pushd $(mktemp -d); go mod init tmp; go get go.astrophena.me/gen; popd
+           $ pushd $(mktemp -d); go mod init tmp; go get go.astrophena.me/gen; popd
 
       `go get` puts binaries by default to `$GOPATH/bin` (e.g.
       `~/go/bin`).
@@ -70,19 +46,19 @@ Download the precompiled binary from [releases page].
 
     * Install with `make`:
 
-            $ git clone https://github.com/astrophena/gen
-            $ cd gen
-            $ make install
+           $ git clone https://github.com/astrophena/gen
+           $ cd gen
+           $ make install
 
         `make install` installs `gen`  by default to `$HOME/.local/bin`.
 
         Use `PREFIX` environment variable to change this behavior:
 
-            $ make install PREFIX="$HOME" # Installs to $HOME/bin.
+           $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
 ## License
 
-[MIT].
+[MIT] © Ilya Mateyko & others
 
 [releases page]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org/dl
