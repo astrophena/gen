@@ -37,7 +37,7 @@ Download the precompiled binary from [releases page].
 
     * Install with `go get`:
 
-        $ pushd $(mktemp -d); go mod init tmp; go get go.astrophena.me/gen; popd
+                $ pushd $(mktemp -d); go mod init tmp; go get go.astrophena.me/gen; popd
 
       `go get` puts binaries by default to `$GOPATH/bin` (e.g.
       `~/go/bin`).
@@ -46,15 +46,15 @@ Download the precompiled binary from [releases page].
 
     * Install with `make`:
 
-        $ git clone https://github.com/astrophena/gen
-        $ cd gen
-        $ make install
+                $ git clone https://github.com/astrophena/gen
+                $ cd gen
+                $ make install
 
         `make install` installs `gen`  by default to `$HOME/.local/bin`.
 
         Use `PREFIX` environment variable to change this behavior:
 
-        $ make install PREFIX="$HOME" # Installs to $HOME/bin.
+                $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
 ## License
 
