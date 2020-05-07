@@ -1,5 +1,4 @@
 // © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
@@ -23,7 +22,6 @@ import (
 const name = "files.go"
 
 var tpl = template.Must(template.New("").Parse(`// © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
