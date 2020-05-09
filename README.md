@@ -58,7 +58,7 @@ Download the precompiled binary from [releases page].
 
 ## License
 
-[MIT] © Ilya Mateyko & others
+[MIT] © Ilya Mateyko
 
 [releases page]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org/dl

@@ -2,5 +2,5 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// Package scaffold implements creation of new sites.
+// Package scaffold implements a creation of new sites.
 package scaffold // import "go.astrophena.me/gen/internal/scaffold"
