@@ -12,8 +12,9 @@ import (
 )
 
 //go:generate go run generate.go
+//go:generate gofmt -s -w files.go
 
-// Create creates a new site in the directory dst or returns an error.
+// Create creates a new site in the directory dst.
 func Create(dst string) (err error) {
 	for name, content := range files {
 		path := filepath.Join(dst, name)

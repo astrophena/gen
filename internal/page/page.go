@@ -32,9 +32,8 @@ type Page struct {
 	Template    string            `yaml:"template"`
 }
 
-// Generate generates HTML from a Page and writes
-// it to the file by the path dst, returning an
-// error otherwise.
+// Generate generates HTML from a Page and writes it to the file by the
+// path dst, returning an error otherwise.
 func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
@@ -67,7 +66,7 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 		return nil, err
 	}
 
-	// TODO(astrophena): Improve frontmatter detection code.
+	// TODO: Improve frontmatter detection code.
 	all := string(b)
 
 	separator := "\n---\n"
@@ -122,8 +121,7 @@ func Template() *template.Template {
 	})
 }
 
-// ParseTemplates parses tpls into a tpl, returning
-// it back or an error.
+// ParseTemplates parses tpls into a tpl, returning it back or an error.
 func ParseTemplates(tpl *template.Template, tpls []string) (*template.Template, error) {
 	for _, t := range tpls {
 		f, err := ioutil.ReadFile(t)

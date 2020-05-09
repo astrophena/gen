@@ -27,10 +27,11 @@ func Run(args []string) (err error) {
 // App returns the structure of the command line interface of gen.
 func App() *cli.App {
 	return &cli.App{
-		Name:            "gen",
-		Usage:           "An another static site generator.",
-		Version:         version.Version,
-		HideHelpCommand: true,
+		Name:                 "gen",
+		Usage:                "An another static site generator.",
+		Version:              version.Version,
+		EnableBashCompletion: true,
+		HideHelpCommand:      true,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:    "source",

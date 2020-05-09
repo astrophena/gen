@@ -9,7 +9,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"go/format"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -70,12 +69,7 @@ func main() {
 		fatal(err)
 	}
 
-	s, err := format.Source(b.Bytes())
-	if err != nil {
-		fatal(err)
-	}
-
-	if err := ioutil.WriteFile(name, s, 0644); err != nil {
+	if err := ioutil.WriteFile(name, b.Bytes(), 0644); err != nil {
 		fatal(err)
 	}
 }
