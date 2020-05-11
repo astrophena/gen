@@ -11,7 +11,11 @@ import (
 	"strings"
 )
 
-const delim = "---\n"
+const (
+	LineBreak = "\n"
+
+	delim = "---" + LineBreak
+)
 
 // ErrNoFrontmatter is returned when no frontmatter has been detected.
 var ErrNoFrontmatter = errors.New("no frontmatter detected")
@@ -38,7 +42,7 @@ func Extract(text string) (frontmatter, content string, err error) {
 		reached bool
 	)
 	for scanner.Scan() {
-		if line = scanner.Text() + "\n"; line == delim {
+		if line = scanner.Text() + LineBreak; line == delim {
 			reached = true
 			continue
 		}
