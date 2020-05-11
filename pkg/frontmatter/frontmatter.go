@@ -11,12 +11,7 @@ import (
 	"strings"
 )
 
-const (
-	// LineBreak is a line break. Self-explanatory.
-	LineBreak = "\n"
-
-	delim = "---" + LineBreak
-)
+const delim = "---" + LineBreak
 
 // ErrNoFrontmatter is returned when no frontmatter has been detected.
 var ErrNoFrontmatter = errors.New("no frontmatter detected")
