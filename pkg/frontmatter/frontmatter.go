@@ -12,6 +12,7 @@ import (
 )
 
 const (
+	// LineBreak is a line break. Self-explanatory.
 	LineBreak = "\n"
 
 	delim = "---" + LineBreak

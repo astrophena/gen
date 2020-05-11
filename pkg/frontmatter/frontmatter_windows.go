@@ -7,4 +7,6 @@ package frontmatter // import "go.astrophena.me/gen/pkg/frontmatter"
 // Fucking Windows! I hate you!
 //
 // See https://stackoverflow.com/a/49963413.
+
+// LineBreak is a line break. Self-explanatory.
 const LineBreak = "\r\n"
