@@ -28,13 +28,13 @@ func TestValidExtract(t *testing.T) {
 		t.Error(err)
 	}
 
-	exp1 := "hello: world" + frontmatter.LineBreak
+	exp1 := "hello: world\n"
 
 	if ret1 != exp1 {
 		t.Errorf("returned %s, but expected %s", ret1, exp1)
 	}
 
-	exp2 := "# Hello, world!" + frontmatter.LineBreak
+	exp2 := "# Hello, world!\n"
 
 	if ret2 != exp2 {
 		t.Errorf("returned %s, but expected %s", ret2, exp2)
