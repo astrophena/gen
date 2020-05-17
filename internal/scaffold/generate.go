@@ -1,5 +1,4 @@
 // © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
@@ -10,7 +9,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"go/format"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -23,7 +21,6 @@ import (
 const name = "files.go"
 
 var tpl = template.Must(template.New("").Parse(`// © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
@@ -72,12 +69,7 @@ func main() {
 		fatal(err)
 	}
 
-	s, err := format.Source(b.Bytes())
-	if err != nil {
-		fatal(err)
-	}
-
-	if err := ioutil.WriteFile(name, s, 0644); err != nil {
+	if err := ioutil.WriteFile(name, b.Bytes(), 0644); err != nil {
 		fatal(err)
 	}
 }

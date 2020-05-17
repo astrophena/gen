@@ -1,5 +1,4 @@
 // © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
@@ -13,11 +12,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"go.astrophena.me/gen/internal/version"
 	"go.astrophena.me/gen/pkg/fileutil"
+	"go.astrophena.me/gen/pkg/frontmatter"
 
 	"github.com/russross/blackfriday/v2"
 	"gopkg.in/yaml.v2"
@@ -33,9 +32,8 @@ type Page struct {
 	Template    string            `yaml:"template"`
 }
 
-// Generate generates HTML from a Page and writes
-// it to the file by the path dst, returning an
-// error otherwise.
+// Generate generates HTML from a Page and writes it to the file by the
+// path dst, returning an error otherwise.
 func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
@@ -68,17 +66,10 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 		return nil, err
 	}
 
-	// TODO(astrophena): Improve frontmatter detection code.
-	all := string(b)
-
-	separator := "\n---\n"
-	position := strings.Index(all, separator)
-	if position <= 0 {
-		return nil, fmt.Errorf("%s: no frontmatter detected", src)
+	fm, c, err := frontmatter.Extract(string(b))
+	if err != nil {
+		return nil, err
 	}
-
-	frontmatter := all[:position]
-	content := all[position+len(separator):]
 
 	p := &Page{
 		MetaTags: make(map[string]string),
@@ -86,14 +77,14 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 
 	switch filepath.Ext(src) {
 	case ".html":
-		p.Content = content
+		p.Content = c
 	case ".md":
-		p.Content = string(blackfriday.Run([]byte(content)))
+		p.Content = string(blackfriday.Run([]byte(c)))
 	default:
 		return nil, fmt.Errorf("%s: format doesn't supported", src)
 	}
 
-	if err := yaml.Unmarshal([]byte(frontmatter), p); err != nil {
+	if err := yaml.Unmarshal([]byte(fm), p); err != nil {
 		return nil, err
 	}
 
@@ -123,8 +114,7 @@ func Template() *template.Template {
 	})
 }
 
-// ParseTemplates parses tpls into a tpl, returning
-// it back or an error.
+// ParseTemplates parses tpls into a tpl, returning it back or an error.
 func ParseTemplates(tpl *template.Template, tpls []string) (*template.Template, error) {
 	for _, t := range tpls {
 		f, err := ioutil.ReadFile(t)

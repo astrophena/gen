@@ -1,5 +1,4 @@
 // © 2020 Ilya Mateyko. All rights reserved.
-// © 2019 Frédéric Guillot. All rights reserved.
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
@@ -16,8 +15,7 @@ import (
 	"go.astrophena.me/gen/pkg/fileutil"
 )
 
-// Build builds the site from the directory src
-// to the directory dst, creating it if needed.
+// Build builds the site from the directory src to the directory dst, creating it if needed.
 func Build(src, dst string) (err error) {
 	var (
 		dirs = map[string]string{
@@ -50,7 +48,7 @@ func Build(src, dst string) (err error) {
 
 	// Copy static files if we have them.
 	if fileutil.Exists(dirs["static"]) {
-		fmt.Printf("Copying static files...\n")
+		fmt.Println("Copying static files...")
 		if err := fileutil.CopyDirContents(dirs["static"], dst); err != nil {
 			return err
 		}
@@ -77,19 +75,22 @@ func Build(src, dst string) (err error) {
 		return err
 	}
 
-	if len(pages) == 1 {
-		fmt.Printf("Parsing and generating %d page...\n", len(pages))
-	} else {
-		fmt.Printf("Parsing and generating %d pages...\n", len(pages))
+	if len(pages) > 0 {
+		if len(pages) == 1 {
+			fmt.Printf("Parsing and generating %d page...\n", len(pages))
+		} else {
+			fmt.Printf("Parsing and generating %d pages...\n", len(pages))
+		}
 	}
-	for _, pg := range pages {
-		pg, err := page.Parse(tpl, pg)
+
+	for _, p := range pages {
+		p, err := page.Parse(tpl, p)
 		if err != nil {
 			return err
 		}
 
-		if pg != nil {
-			if err := pg.Generate(tpl, dst); err != nil {
+		if p != nil {
+			if err := p.Generate(tpl, dst); err != nil {
 				return err
 			}
 		}
