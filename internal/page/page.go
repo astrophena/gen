@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package page implements page parsing and generation.
-package page // import "go.astrophena.me/gen/internal/page"
+package page // import "github.com/astrophena/gen/internal/page"
 
 import (
 	"bytes"
@@ -14,9 +14,9 @@ import (
 	"path/filepath"
 	"time"
 
-	"go.astrophena.me/gen/internal/version"
-	"go.astrophena.me/gen/pkg/fileutil"
-	"go.astrophena.me/gen/pkg/frontmatter"
+	"github.com/astrophena/gen/internal/version"
+	"github.com/astrophena/gen/pkg/fileutil"
+	"github.com/astrophena/gen/pkg/frontmatter"
 
 	"github.com/russross/blackfriday/v2"
 	"gopkg.in/yaml.v2"

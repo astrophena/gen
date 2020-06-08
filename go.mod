@@ -1,4 +1,4 @@
-module go.astrophena.me/gen
+module github.com/astrophena/gen
 
 go 1.14
 

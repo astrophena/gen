@@ -3,13 +3,13 @@
 // license that can be found in the LICENSE.md file.
 
 // gen is an another static site generator.
-package main // import "go.astrophena.me/gen"
+package main // import "github.com/astrophena/gen"
 
 import (
 	"fmt"
 	"os"
 
-	"go.astrophena.me/gen/internal/cli"
+	"github.com/astrophena/gen/internal/cli"
 )
 
 func main() {

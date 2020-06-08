@@ -14,7 +14,7 @@ import (
 	"reflect"
 	"testing"
 
-	"go.astrophena.me/gen/pkg/fileutil"
+	"github.com/astrophena/gen/pkg/fileutil"
 )
 
 func remove(t *testing.T, f string) func() {

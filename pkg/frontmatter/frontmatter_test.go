@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"go.astrophena.me/gen/pkg/frontmatter"
+	"github.com/astrophena/gen/pkg/frontmatter"
 )
 
 var (

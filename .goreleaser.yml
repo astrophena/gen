@@ -14,13 +14,13 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X go.astrophena.me/gen/internal/version.Version={{.Version}} -buildid=
+      - -s -w -X github.com/astrophena/gen/internal/version.Version={{.Version}} -buildid=
 archives:
   - format: binary
 nfpms:
   - package_name: gen
     vendor: Ilya Mateyko
-    homepage: https://go.astrophena.me/gen
+    homepage: https://github.com/astrophena/gen
     maintainer: Ilya Mateyko <me@astrophena.me>
     description: An another static site generator.
     license: MIT
