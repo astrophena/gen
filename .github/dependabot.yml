@@ -7,10 +7,7 @@ updates:
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
-    interval: daily
-    time: '20:00'
-    timezone: Europe/Minsk
-  open-pull-requests-limit: 10
+    interval: "monthly"
   reviewers:
   - astrophena
   assignees:
@@ -18,10 +15,7 @@ updates:
 - package-ecosystem: gomod
   directory: "/"
   schedule:
-    interval: daily
-    time: '20:00'
-    timezone: Europe/Minsk
-  open-pull-requests-limit: 10
+    interval: "monthly"
   reviewers:
   - astrophena
   assignees:
