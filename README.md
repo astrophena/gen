@@ -56,7 +56,7 @@ Download the precompiled binary from [releases page].
 
            $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
-## Tips
+## Autoreloading
 
 You can use [entr] to automatically rebuild the site when changing files:
 
