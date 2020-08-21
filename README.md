@@ -31,7 +31,7 @@ Download the precompiled binary from [releases page].
 
 ### From source
 
-1. Install [Go] 1.14 if you haven't yet.
+1. Install the latest version of [Go] toolchain if you haven't yet.
 
 2. Two installation options are supported:
 
