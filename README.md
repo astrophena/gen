@@ -56,6 +56,12 @@ Download the precompiled binary from [releases page].
 
            $ make install PREFIX="$HOME" # Installs to $HOME/bin.
 
+## Tips
+
+You can use [entr] to automatically rebuild the site when changing files:
+
+        $ while true; do find . -type f -not -path '*/\.git/*' | entr -d gen build; done
+
 ## License
 
 [MIT] © Ilya Mateyko
@@ -63,3 +69,4 @@ Download the precompiled binary from [releases page].
 [releases page]: https://github.com/astrophena/gen/releases
 [Go]: https://golang.org/dl
 [MIT]: LICENSE.md
+[entr]: http://eradman.com/entrproject/
