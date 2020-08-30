@@ -10,11 +10,13 @@ import (
 	"os"
 
 	"github.com/astrophena/gen/internal/cli"
+
+	"github.com/logrusorgru/aurora"
 )
 
 func main() {
 	if err := cli.Run(os.Args); err != nil {
-		fmt.Println(err)
+		fmt.Println(aurora.Red(err.Error()))
 		os.Exit(1)
 	}
 }

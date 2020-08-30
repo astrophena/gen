@@ -5,10 +5,13 @@
 package scaffold // import "github.com/astrophena/gen/internal/scaffold"
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
 	"github.com/astrophena/gen/pkg/fileutil"
+
+	"github.com/logrusorgru/aurora"
 )
 
 //go:generate go run generate.go
@@ -24,6 +27,7 @@ func Create(dst string) (err error) {
 			return err
 		}
 
+		fmt.Printf("%s	%s\n", aurora.Green("create"), name)
 		if err := ioutil.WriteFile(path, content, 0644); err != nil {
 			return err
 		}
