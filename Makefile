@@ -10,7 +10,7 @@ BINDIR  = $(PREFIX)/bin
 
 DISTDIR = ./dist
 
-LDFLAGS = "-s -w -X github.com/astrophena/gen/internal/version.Version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X go.astrophena.name/gen/internal/version.Version=$(VERSION) -buildid="
 
 .PHONY: build generate install clean test dist help
 

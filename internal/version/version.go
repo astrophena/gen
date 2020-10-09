@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package version contains a version of gen.
-package version // import "github.com/astrophena/gen/internal/version"
+package version // import "go.astrophena.name/gen/internal/version"
 
 import (
 	"runtime/debug"

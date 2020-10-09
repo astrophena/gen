@@ -15,4 +15,4 @@ This is a new site built with `gen`.
 
 3. Go to `http://localhost:3000`.
 
-[gen]: https://github.com/astrophena/gen#installation
+[gen]: https://go.astrophena.name/gen#installation

@@ -1,8 +1,5 @@
 # `gen`
 
-> **Work in Progress**: `gen` is not finished and has many, many
-> rough edges. I don't know when `gen` will be finished. Maybe never.
-
 `gen` is an another static site generator.
 
 ## Getting Started
@@ -23,6 +20,12 @@
 
 4. Go to `http://localhost:3000`.
 
+## Tips
+
+You can use [entr] to automatically rebuild the site when changing files:
+
+        $ while true; do find . -type f -not -path '*/\.git/*' | entr -d gen build; done
+
 ## Installation
 
 ### From binary
@@ -37,7 +40,7 @@ Download the precompiled binary from [releases page].
 
     * Install with `go get`:
 
-           $ pushd $(mktemp -d); go mod init tmp; go get github.com/astrophena/gen; popd
+           $ pushd $(mktemp -d); go mod init tmp; go get go.astrophena.name/gen; popd
 
       `go get` puts binaries by default to `$GOPATH/bin` (e.g.
       `~/go/bin`).
@@ -55,12 +58,6 @@ Download the precompiled binary from [releases page].
         Use `PREFIX` environment variable to change this behavior:
 
            $ make install PREFIX="$HOME" # Installs to $HOME/bin.
-
-## Autoreloading
-
-You can use [entr] to automatically rebuild the site when changing files:
-
-        $ while true; do find . -type f -not -path '*/\.git/*' | entr -d gen build; done
 
 ## License
 

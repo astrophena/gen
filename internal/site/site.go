@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package site implements site building.
-package site // import "github.com/astrophena/gen/internal/site"
+package site // import "go.astrophena.name/gen/internal/site"
 
 import (
 	"fmt"
@@ -11,8 +11,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/astrophena/gen/internal/page"
-	"github.com/astrophena/gen/pkg/fileutil"
+	"go.astrophena.name/gen/internal/page"
+	"go.astrophena.name/gen/pkg/fileutil"
 )
 
 // Build builds the site from the directory src to the directory dst, creating it if needed.

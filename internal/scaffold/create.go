@@ -2,14 +2,14 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-package scaffold // import "github.com/astrophena/gen/internal/scaffold"
+package scaffold // import "go.astrophena.name/gen/internal/scaffold"
 
 import (
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
 
-	"github.com/astrophena/gen/pkg/fileutil"
+	"go.astrophena.name/gen/pkg/fileutil"
 
 	"github.com/logrusorgru/aurora"
 )

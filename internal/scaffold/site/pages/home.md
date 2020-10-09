@@ -6,4 +6,4 @@ description: New site built with gen.
 ---
 This is a new site built with [gen].
 
-[gen]: https://github.com/astrophena/gen
+[gen]: https://go.astrophena.name/gen

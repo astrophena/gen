@@ -11,8 +11,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/astrophena/gen/internal/page"
-	"github.com/astrophena/gen/pkg/fileutil"
+	"go.astrophena.name/gen/internal/page"
+	"go.astrophena.name/gen/pkg/fileutil"
 )
 
 func testTpl(t *testing.T) *template.Template {

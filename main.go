@@ -3,13 +3,13 @@
 // license that can be found in the LICENSE.md file.
 
 // gen is an another static site generator.
-package main // import "github.com/astrophena/gen"
+package main // import "go.astrophena.name/gen"
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/astrophena/gen/internal/cli"
+	"go.astrophena.name/gen/internal/cli"
 
 	"github.com/logrusorgru/aurora"
 )
