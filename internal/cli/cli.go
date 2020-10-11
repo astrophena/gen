@@ -6,6 +6,7 @@
 package cli // import "go.astrophena.name/gen/internal/cli"
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -21,11 +22,10 @@ import (
 
 // Run invokes the command line interface of gen.
 func Run(args []string) (err error) {
-	return App().Run(args)
+	return app().Run(args)
 }
 
-// App returns the structure of the command line interface of gen.
-func App() *cli.App {
+func app() *cli.App {
 	return &cli.App{
 		Name:                 "gen",
 		Usage:                "An another static site generator.",
@@ -98,7 +98,7 @@ func newCmd(c *cli.Context) (err error) {
 	dst := c.Args().Get(0)
 
 	if dst == "" {
-		return fmt.Errorf("new: directory is required, but not provided")
+		return errors.New("directory is required, but not provided")
 	}
 
 	return scaffold.Create(dst)
