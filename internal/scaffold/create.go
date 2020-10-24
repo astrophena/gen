@@ -10,8 +10,6 @@ import (
 	"path/filepath"
 
 	"go.astrophena.name/gen/pkg/fileutil"
-
-	"github.com/logrusorgru/aurora"
 )
 
 //go:generate go run generate.go
@@ -27,7 +25,7 @@ func Create(dst string) (err error) {
 			return err
 		}
 
-		fmt.Printf("%s	%s\n", aurora.Green("create"), name)
+		fmt.Printf("%s	%s\n", "create", name)
 		if err := ioutil.WriteFile(path, content, 0644); err != nil {
 			return err
 		}

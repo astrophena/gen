@@ -20,9 +20,7 @@
 
 4. Go to `http://localhost:3000`.
 
-## Tips
-
-You can use [entr] to automatically rebuild the site when changing files:
+**ProTip!**: you can use [entr] to automatically rebuild the site when changing files:
 
         $ while true; do find . -type f -not -path '*/\.git/*' | entr -d gen build; done
 

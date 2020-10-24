@@ -6,17 +6,16 @@
 package main // import "go.astrophena.name/gen"
 
 import (
-	"fmt"
+	"log"
 	"os"
 
 	"go.astrophena.name/gen/internal/cli"
-
-	"github.com/logrusorgru/aurora"
 )
 
 func main() {
+	log.SetFlags(0)
+
 	if err := cli.Run(os.Args); err != nil {
-		fmt.Println(aurora.Red(err.Error()))
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

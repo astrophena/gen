@@ -120,7 +120,7 @@ func serverCmd(c *cli.Context) (err error) {
 	)
 
 	if !fileutil.Exists(dst) {
-		return fmt.Errorf("%s: doesn't exist, run \"gen build\" to build the site", dst)
+		return fmt.Errorf("%s doesn't exist, run \"gen build\" to build the site", dst)
 	}
 
 	fmt.Printf("Listening on a port %v...\nUse Ctrl+C to stop.\n", port)
