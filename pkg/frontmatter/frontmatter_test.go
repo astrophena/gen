@@ -48,7 +48,7 @@ func TestInvalidExtract(t *testing.T) {
 	}
 
 	_, _, err = frontmatter.Extract(string(text))
-	if err != frontmatter.ErrNoFrontmatter {
+	if err != frontmatter.ErrNotDetected {
 		t.Error("frontmatter shouldn't be detected")
 	}
 }

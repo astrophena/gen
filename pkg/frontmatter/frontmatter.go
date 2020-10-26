@@ -13,8 +13,8 @@ import (
 
 const delim = "---\n"
 
-// ErrNoFrontmatter is returned when no frontmatter has been detected.
-var ErrNoFrontmatter = errors.New("no frontmatter detected")
+// ErrNotDetected is returned when no frontmatter has been detected.
+var ErrNotDetected = errors.New("no frontmatter detected")
 
 // Extract extracts frontmatter from a text, returning a frontmatter
 // and a content without it.
@@ -25,7 +25,7 @@ func Extract(text string) (frontmatter, content string, err error) {
 	}
 
 	if !contains {
-		return "", "", ErrNoFrontmatter
+		return "", "", ErrNotDetected
 	}
 
 	scanner := bufio.NewScanner(strings.NewReader(text))
@@ -56,10 +56,7 @@ func Extract(text string) (frontmatter, content string, err error) {
 func Contains(text string) (contains bool, err error) {
 	r := bufio.NewReader(strings.NewReader(text))
 
-	// Why 4 bytes?
-	// ---\n
-	// That's why.
-	b, err := r.Peek(4)
+	b, err := r.Peek(len([]byte(delim)))
 	if err != nil {
 		return false, err
 	}
