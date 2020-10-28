@@ -9,6 +9,8 @@ import (
 	"bufio"
 	"errors"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 const delim = "---\n"
@@ -16,15 +18,26 @@ const delim = "---\n"
 // ErrNotDetected is returned when no frontmatter has been detected.
 var ErrNotDetected = errors.New("no frontmatter detected")
 
-// Extract extracts frontmatter from a text, returning a frontmatter
-// and a content without it.
+// Contains returns true if text includes frontmatter.
+func Contains(text string) (contains bool, err error) {
+	r := bufio.NewReader(strings.NewReader(text))
+
+	b, err := r.Peek(len([]byte(delim)))
+	if err != nil {
+		return false, err
+	}
+
+	return string(b) == delim, nil
+}
+
+// Extract extracts frontmatter from text, returning frontmatter and content.
 func Extract(text string) (frontmatter, content string, err error) {
-	contains, err := Contains(text)
+	c, err := Contains(text)
 	if err != nil {
 		return "", "", err
 	}
 
-	if !contains {
+	if !c {
 		return "", "", ErrNotDetected
 	}
 
@@ -52,14 +65,17 @@ func Extract(text string) (frontmatter, content string, err error) {
 	return frontmatter, content, nil
 }
 
-// Contains returns true if the text include frontmatter.
-func Contains(text string) (contains bool, err error) {
-	r := bufio.NewReader(strings.NewReader(text))
-
-	b, err := r.Peek(len([]byte(delim)))
+// Parse extracts YAML frontmatter from text and unmarshals it into obj,
+// returning content without frontmatter and an error.
+func Parse(text string, obj interface{}) (content string, err error) {
+	fm, c, err := Extract(text)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 
-	return string(b) == delim, nil
+	if err := yaml.Unmarshal([]byte(fm), obj); err != nil {
+		return "", err
+	}
+
+	return c, nil
 }

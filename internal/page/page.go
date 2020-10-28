@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"go.astrophena.name/gen/internal/version"
@@ -19,7 +20,6 @@ import (
 	"go.astrophena.name/gen/pkg/frontmatter"
 
 	"github.com/russross/blackfriday/v2"
-	"gopkg.in/yaml.v2"
 )
 
 // Page represents a page.
@@ -66,34 +66,28 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 		return nil, err
 	}
 
-	fm, c, err := frontmatter.Extract(string(b))
+	p := &Page{MetaTags: make(map[string]string)}
+
+	c, err := frontmatter.Parse(string(b), p)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: failed to parse frontmatter: %w", src, err)
 	}
 
-	p := &Page{
-		MetaTags: make(map[string]string),
-	}
-
-	switch filepath.Ext(src) {
-	case ".html":
-		p.Content = c
-	case ".md":
-		p.Content = string(blackfriday.Run([]byte(c)))
-	default:
-		return nil, fmt.Errorf("%s: format doesn't supported", src)
-	}
-
-	if err := yaml.Unmarshal([]byte(fm), p); err != nil {
-		return nil, err
+	if tpl.Lookup(p.Template) == nil {
+		return nil, fmt.Errorf("%s: the template %s specified is not defined", src, p.Template)
 	}
 
 	if p.Title == "" || p.Template == "" || p.URI == "" {
 		return nil, fmt.Errorf("%s: missing required frontmatter parameter (title, template, uri)", src)
 	}
 
-	if tpl.Lookup(p.Template) == nil {
-		return nil, fmt.Errorf("%s: the template %s specified is not defined", src, p.Template)
+	switch ext := filepath.Ext(src); ext {
+	case ".html":
+		p.Content = c
+	case ".md":
+		p.Content = string(blackfriday.Run([]byte(c)))
+	default:
+		return nil, fmt.Errorf("%s: format %s doesn't supported", src, strings.Trim(ext, "."))
 	}
 
 	return p, nil
