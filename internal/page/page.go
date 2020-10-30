@@ -32,6 +32,9 @@ type Page struct {
 	Template    string            `yaml:"template"`
 }
 
+// SupportedFormats contains page formats supported by gen.
+var SupportedFormats = []string{".html", ".md"}
+
 // Generate generates HTML from a Page and writes it to the file by the
 // path dst, returning an error otherwise.
 func (p *Page) Generate(tpl *template.Template, dst string) (err error) {

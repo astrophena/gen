@@ -14,7 +14,7 @@
 
         $ cd mysite
         $ gen build
-        $ gen server
+        $ gen serve
 
     Run with `--help` or `-h` for options.
 

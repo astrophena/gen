@@ -7,6 +7,8 @@ package site // import "go.astrophena.name/gen/internal/site"
 
 import (
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -15,53 +17,56 @@ import (
 	"go.astrophena.name/gen/pkg/fileutil"
 )
 
-// Build builds the site from the directory src to the directory dst, creating it if needed.
-func Build(src, dst string) (err error) {
+// Site represents a site.
+type Site struct {
+	src string
+	dst string
+}
+
+// New returns a new Site.
+func New(src, dst string) *Site {
+	return &Site{src: src, dst: dst}
+}
+
+// Build builds the Site.
+func (s *Site) Build() (err error) {
 	var (
-		dirs = map[string]string{
-			"pages":     filepath.Join(src, "pages"),
-			"templates": filepath.Join(src, "templates"),
-			"static":    filepath.Join(src, "static"),
-		}
+		pagesDir     = filepath.Join(s.src, "pages")
+		templatesDir = filepath.Join(s.src, "templates")
+		staticDir    = filepath.Join(s.src, "static")
 
 		start = time.Now()
 	)
 
-	// Remove the previously generated site.
-	if fileutil.Exists(dst) {
-		if err := os.RemoveAll(dst); err != nil {
-			return err
-		}
-	}
-
-	// Check if the required directories exist.
+	dirs := []string{pagesDir, templatesDir, staticDir}
 	for _, dir := range dirs {
 		if !fileutil.Exists(dir) && dir != "static" {
 			return fmt.Errorf("%s: doesn't exist, this directory is required for building a site", dir)
 		}
 	}
 
-	// Create the site directory.
-	if err := fileutil.Mkdir(dst); err != nil {
+	if err := s.Clean(); err != nil {
 		return err
 	}
 
-	// Copy static files if we have them.
-	if fileutil.Exists(dirs["static"]) {
+	if err := fileutil.Mkdir(s.dst); err != nil {
+		return err
+	}
+
+	if fileutil.Exists(staticDir) {
 		fmt.Println("Copying static files...")
-		if err := fileutil.CopyDirContents(dirs["static"], dst); err != nil {
+		if err := fileutil.CopyDirContents(staticDir, s.dst); err != nil {
 			return err
 		}
 	}
 
-	// Parse templates if we have them, otherwise return an error.
-	tpls, err := fileutil.Files(dirs["templates"], ".html")
+	tpls, err := fileutil.Files(templatesDir, ".html")
 	if err != nil {
 		return err
 	}
 
 	if len(tpls) < 1 {
-		return fmt.Errorf("no templates found in the directory %s", dirs["templates"])
+		return fmt.Errorf("no templates found in the directory %s", templatesDir)
 	}
 
 	tpl, err := page.ParseTemplates(page.Template(), tpls)
@@ -69,8 +74,7 @@ func Build(src, dst string) (err error) {
 		return err
 	}
 
-	// Parse and generate pages if we have them.
-	pages, err := fileutil.Files(dirs["pages"], ".html", ".md")
+	pages, err := fileutil.Files(pagesDir, page.SupportedFormats...)
 	if err != nil {
 		return err
 	}
@@ -90,13 +94,46 @@ func Build(src, dst string) (err error) {
 		}
 
 		if p != nil {
-			if err := p.Generate(tpl, dst); err != nil {
+			if err := p.Generate(tpl, s.dst); err != nil {
 				return err
 			}
 		}
 	}
 
-	fmt.Printf("Successfully built in %v.\n", time.Since(start))
+	log.Printf("Built in %v.", time.Since(start))
+
+	return nil
+}
+
+// Clean removes all generated files.
+func (s *Site) Clean() (err error) {
+	if fileutil.Exists(s.dst) {
+		return os.RemoveAll(s.dst)
+	}
+	return nil
+}
+
+// Serve starts local HTTP server, serving the Site.
+func (s *Site) Serve(addr string) (err error) {
+	srv := &http.Server{
+		Addr:         addr,
+		WriteTimeout: time.Second * 15,
+		ReadTimeout:  time.Second * 15,
+		IdleTimeout:  time.Second * 15,
+		Handler:      http.FileServer(http.Dir(s.dst)),
+	}
+
+	if err := s.Build(); err != nil {
+		return err
+	}
+
+	log.Printf("Listening on %s.", addr)
+	log.Println("Use Ctrl+C to stop.")
+	if err := srv.ListenAndServe(); err != nil {
+		if err != http.ErrServerClosed {
+			return err
+		}
+	}
 
 	return nil
 }

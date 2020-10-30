@@ -9,10 +9,10 @@ This is a new site built with `gen`.
 2. Build and serve the site locally:
 
         $ gen build
-        $ gen server
+        $ gen serve
 
     Run with `--help` or `-h` for options.
 
 3. Go to `http://localhost:3000`.
 
-[gen]: https://go.astrophena.name/gen#installation
+[gen]: https://github.com/astrophena/gen#installation

@@ -7,15 +7,10 @@ package cli // import "go.astrophena.name/gen/internal/cli"
 
 import (
 	"errors"
-	"fmt"
-	"net/http"
-	"os"
-	"time"
 
 	"go.astrophena.name/gen/internal/scaffold"
 	"go.astrophena.name/gen/internal/site"
 	"go.astrophena.name/gen/internal/version"
-	"go.astrophena.name/gen/pkg/fileutil"
 
 	"github.com/urfave/cli/v2"
 )
@@ -60,18 +55,18 @@ func app() *cli.App {
 				Action:  cleanCmd,
 			},
 			{
-				Name:    "server",
+				Name:    "serve",
 				Aliases: []string{"s"},
 				Flags: []cli.Flag{
-					&cli.IntFlag{
-						Name:    "port",
-						Aliases: []string{"p"},
-						Usage:   "serve at `PORT`",
-						Value:   3000,
+					&cli.StringFlag{
+						Name:    "addr",
+						Aliases: []string{"a"},
+						Usage:   "serve at `host:port`",
+						Value:   "localhost:3000",
 					},
 				},
-				Usage:  "Start local HTTP server",
-				Action: serverCmd,
+				Usage:  "Build and serve the site locally",
+				Action: serveCmd,
 			},
 			{
 				Name:    "new",
@@ -83,17 +78,18 @@ func app() *cli.App {
 	}
 }
 
-// buildCmd implements the "build" command.
 func buildCmd(c *cli.Context) (err error) {
-	var (
-		src = c.String("source")
-		dst = c.String("destination")
-	)
-
-	return site.Build(src, dst)
+	return site.New(c.String("source"), c.String("destination")).Build()
 }
 
-// newCmd implements the "new" command.
+func cleanCmd(c *cli.Context) (err error) {
+	return site.New(c.String("source"), c.String("destination")).Clean()
+}
+
+func serveCmd(c *cli.Context) (err error) {
+	return site.New(c.String("source"), c.String("destination")).Serve(c.String("addr"))
+}
+
 func newCmd(c *cli.Context) (err error) {
 	dst := c.Args().Get(0)
 
@@ -102,44 +98,4 @@ func newCmd(c *cli.Context) (err error) {
 	}
 
 	return scaffold.Create(dst)
-}
-
-// serverCmd implements the "server" command.
-func serverCmd(c *cli.Context) (err error) {
-	var (
-		dst  = c.String("destination")
-		port = c.Int("port")
-
-		srv = &http.Server{
-			Addr:         fmt.Sprintf("localhost:%v", port),
-			WriteTimeout: time.Second * 15,
-			ReadTimeout:  time.Second * 15,
-			IdleTimeout:  time.Second * 15,
-			Handler:      http.FileServer(http.Dir(dst)),
-		}
-	)
-
-	if !fileutil.Exists(dst) {
-		return fmt.Errorf("%s doesn't exist, run \"gen build\" to build the site", dst)
-	}
-
-	fmt.Printf("Listening on a port %v...\nUse Ctrl+C to stop.\n", port)
-	if err := srv.ListenAndServe(); err != nil {
-		if err != http.ErrServerClosed {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// cleanCmd implements the "clean" command.
-func cleanCmd(c *cli.Context) (err error) {
-	dst := c.String("destination")
-
-	if fileutil.Exists(dst) {
-		return os.RemoveAll(dst)
-	}
-
-	return nil
 }
