@@ -7,9 +7,11 @@ package site // import "go.astrophena.name/gen/internal/site"
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"time"
 
@@ -120,7 +122,7 @@ func (s *Site) Serve(addr string) (err error) {
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 15,
-		Handler:      http.FileServer(http.Dir(s.dst)),
+		Handler:      s.fs(),
 	}
 
 	if err := s.Build(); err != nil {
@@ -136,4 +138,30 @@ func (s *Site) Serve(addr string) (err error) {
 	}
 
 	return nil
+}
+
+func (s *Site) fs() http.Handler {
+	fs := http.Dir(s.dst)
+	fsrv := http.FileServer(fs)
+
+	// See https://stackoverflow.com/a/62747667.
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := fs.Open(path.Clean(r.URL.Path)) // Do not allow path traversals.
+		if os.IsNotExist(err) {
+			s.notFound(w, r)
+			return
+		}
+		fsrv.ServeHTTP(w, r)
+	})
+}
+
+func (s *Site) notFound(w http.ResponseWriter, r *http.Request) {
+	nf, err := ioutil.ReadFile(filepath.Join(s.dst, "404.html"))
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+
+	w.WriteHeader(http.StatusNotFound)
+	fmt.Fprint(w, string(nf))
 }
