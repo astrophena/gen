@@ -21,7 +21,7 @@ nfpms:
   - package_name: gen
     vendor: Ilya Mateyko
     homepage: https://github.com/astrophena/gen
-    maintainer: Ilya Mateyko <astrophena@gmail.com>
+    maintainer: Ilya Mateyko <me@astrophena.name>
     description: An another static site generator.
     license: MIT
     formats:

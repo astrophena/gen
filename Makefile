@@ -1,30 +1,18 @@
-PREFIX  ?= $(HOME)/.local
-VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
+LDFLAGS = "-s -w -X go.astrophena.name/gen/internal/version.Version=$(VERSION) -buildid="
 
-BIN     = gen
-BINDIR  = $(PREFIX)/bin
+VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
 
 DISTDIR = ./dist
 
-LDFLAGS = "-s -w -X go.astrophena.name/gen/internal/version.Version=$(VERSION) -buildid="
-
-.PHONY: build generate install clean test dist help
+.PHONY: build clean dist help
 
 build: ## Build
-	@ go build -o $(BIN) -trimpath -ldflags=$(LDFLAGS)
-
-generate: ## Generate
-	@ go generate ./...
-
-install: build ## Install
-	@ mkdir -m755 -p $(BINDIR) && \
-		install -m755 $(BIN) $(BINDIR)
+	@ GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -trimpath -ldflags=$(LDFLAGS)
 
 clean: ## Clean
-	@ rm -rf $(BIN) $(DISTDIR)
-
-test: ## Run tests
-	@ go test ./...
+	@ go clean
 
 dist: ## Build with GoReleaser
 	@ goreleaser --snapshot --skip-publish
