@@ -15,9 +15,9 @@ import (
 	"strings"
 	"time"
 
+	"go.astrophena.name/gen/fileutil"
+	"go.astrophena.name/gen/frontmatter"
 	"go.astrophena.name/gen/internal/version"
-	"go.astrophena.name/gen/pkg/fileutil"
-	"go.astrophena.name/gen/pkg/frontmatter"
 
 	"github.com/russross/blackfriday/v2"
 )
@@ -35,8 +35,7 @@ type Page struct {
 // SupportedFormats contains page formats supported by gen.
 var SupportedFormats = []string{".html", ".md"}
 
-// Generate generates HTML from a Page and writes it to the file by the
-// path dst, returning an error otherwise.
+// Generate generates HTML from a Page and writes it to the file dst.
 func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
@@ -62,7 +61,7 @@ func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	return nil
 }
 
-// Parse parses a file and returns Page or an error.
+// Parse parses a file from src and returns a Page.
 func Parse(tpl *template.Template, src string) (*Page, error) {
 	b, err := ioutil.ReadFile(src)
 	if err != nil {
@@ -96,7 +95,7 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 	return p, nil
 }
 
-// Template returns a *template.Template that is used for generating pages.
+// Template returns a template that is used for page generation.
 func Template() *template.Template {
 	return template.New("").Funcs(template.FuncMap{
 		"content": func(p *Page) template.HTML {
@@ -111,7 +110,7 @@ func Template() *template.Template {
 	})
 }
 
-// ParseTemplates parses tpls into a tpl, returning it back or an error.
+// ParseTemplates parses tpls into a tpl.
 func ParseTemplates(tpl *template.Template, tpls []string) (*template.Template, error) {
 	for _, t := range tpls {
 		f, err := ioutil.ReadFile(t)

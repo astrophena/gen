@@ -9,13 +9,13 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	"go.astrophena.name/gen/pkg/fileutil"
+	"go.astrophena.name/gen/fileutil"
 )
 
 //go:generate go run generate.go
 //go:generate gofmt -s -w files.go
 
-// Create creates a new site in the directory dst.
+// Create creates a new site in the path dst.
 func Create(dst string) (err error) {
 	for name, content := range files {
 		path := filepath.Join(dst, name)

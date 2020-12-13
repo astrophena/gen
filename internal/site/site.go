@@ -15,8 +15,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"go.astrophena.name/gen/fileutil"
 	"go.astrophena.name/gen/internal/page"
-	"go.astrophena.name/gen/pkg/fileutil"
 )
 
 // Site represents a site.

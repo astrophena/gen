@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // gen is an another static site generator.
-package main // import "go.astrophena.name/gen"
+package main
 
 import (
 	"log"

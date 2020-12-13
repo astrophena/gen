@@ -61,7 +61,7 @@ func app() *cli.App {
 					&cli.StringFlag{
 						Name:    "addr",
 						Aliases: []string{"a"},
-						Usage:   "serve at `host:port`",
+						Usage:   "listen at `host:port`",
 						Value:   "localhost:3000",
 					},
 				},
@@ -71,7 +71,7 @@ func app() *cli.App {
 			{
 				Name:    "new",
 				Aliases: []string{"n"},
-				Usage:   "Create a new site",
+				Usage:   "Generate a new site",
 				Action:  newCmd,
 			},
 		},

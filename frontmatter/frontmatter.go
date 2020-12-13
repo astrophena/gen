@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package frontmatter implements frontmatter-related functions.
-package frontmatter // import "go.astrophena.name/gen/pkg/frontmatter"
+package frontmatter // import "go.astrophena.name/gen/frontmatter"
 
 import (
 	"bufio"

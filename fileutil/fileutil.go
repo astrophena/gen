@@ -2,8 +2,8 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-// Package fileutil provides helper functions for working with files and directories.
-package fileutil // import "go.astrophena.name/gen/pkg/fileutil"
+// Package fileutil provides functions for working with files and directories.
+package fileutil // import "go.astrophena.name/gen/fileutil"
 
 import (
 	"io"
