@@ -6,7 +6,7 @@ VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
 
 DISTDIR = ./dist
 
-.PHONY: build clean dist help
+.PHONY: build clean dist test help
 
 build: ## Build
 	@ GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -trimpath -ldflags=$(LDFLAGS)
@@ -16,6 +16,9 @@ clean: ## Clean
 
 dist: ## Build with GoReleaser
 	@ goreleaser --snapshot --skip-publish
+
+test: ## Test
+	@ go test -cover ./...
 
 help: ## Show help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
