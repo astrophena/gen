@@ -1,28 +1,22 @@
-# © 2020 Ilya Mateyko. All rights reserved.
-# Use of this source code is governed by the MIT
-# license that can be found in the LICENSE.md file.
-
-name: GoReleaser
+name: Release
 on:
   push:
     tags:
       - v*
 jobs:
-  goreleaser:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        id: checkout
         uses: actions/checkout@v2.3.1
         with:
           fetch-depth: 0
-      - name: Set up Go
-        id: setup-go
+      - name: Go
         uses: actions/setup-go@v2.1.3
         with:
           go-version: 1.15
-      - name: Run GoReleaser
-        id: run-goreleaser
+      - name: Release
         uses: goreleaser/goreleaser-action@v2.4.0
         with:
           version: latest
