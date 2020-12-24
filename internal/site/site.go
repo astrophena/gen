@@ -144,7 +144,12 @@ func minifyStaticFiles(src, dst string) error {
 		}
 		defer from.Close()
 
-		dir := filepath.Dir(file)
+		dir, err := filepath.Rel(src, file)
+		if err != nil {
+			return err
+		}
+		dir = filepath.Dir(dir)
+
 		if err := fileutil.Mkdir(filepath.Join(dst, dir)); err != nil {
 			return err
 		}
