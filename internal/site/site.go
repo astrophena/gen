@@ -21,13 +21,15 @@ import (
 
 // Site represents a site.
 type Site struct {
+	minify bool
+
 	src string
 	dst string
 }
 
 // New returns a new Site.
-func New(src, dst string) *Site {
-	return &Site{src: src, dst: dst}
+func New(src, dst string, minify bool) *Site {
+	return &Site{src: src, dst: dst, minify: minify}
 }
 
 // Build builds the Site.
@@ -96,7 +98,7 @@ func (s *Site) Build() (err error) {
 		}
 
 		if p != nil {
-			if err := p.Generate(tpl, s.dst); err != nil {
+			if err := p.Generate(tpl, s.dst, s.minify); err != nil {
 				return err
 			}
 		}

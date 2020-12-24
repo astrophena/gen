@@ -20,6 +20,8 @@ import (
 	"go.astrophena.name/gen/internal/version"
 
 	"github.com/russross/blackfriday/v2"
+	minifypkg "github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/html"
 )
 
 // Page represents a page.
@@ -36,16 +38,28 @@ type Page struct {
 var SupportedFormats = []string{".html", ".md"}
 
 // Generate generates HTML from a Page and writes it to the file dst.
-func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
+func (p *Page) Generate(tpl *template.Template, dst string, minify bool) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
 		return err
 	}
 
-	var buf bytes.Buffer
+	var pbuf, minbuf bytes.Buffer
 
-	if err := tpl.ExecuteTemplate(&buf, p.Template, p); err != nil {
+	if err := tpl.ExecuteTemplate(&pbuf, p.Template, p); err != nil {
 		return err
+	}
+
+	if minify {
+		m := minifypkg.New()
+		m.Add("text/html", &html.Minifier{
+			KeepDocumentTags: true,
+			KeepEndTags:      true,
+		})
+
+		if err := m.Minify("text/html", &minbuf, &pbuf); err != nil {
+			return err
+		}
 	}
 
 	f, err := os.Create(filepath.Join(dst, p.URI))
@@ -54,8 +68,14 @@ func (p *Page) Generate(tpl *template.Template, dst string) (err error) {
 	}
 	defer f.Close()
 
-	if _, err := buf.WriteTo(f); err != nil {
-		return err
+	if minify {
+		if _, err := minbuf.WriteTo(f); err != nil {
+			return err
+		}
+	} else {
+		if _, err := pbuf.WriteTo(f); err != nil {
+			return err
+		}
 	}
 
 	return nil

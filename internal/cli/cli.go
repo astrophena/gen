@@ -40,6 +40,12 @@ func app() *cli.App {
 				Usage:   "write files to `DIR`",
 				Value:   "site",
 			},
+			&cli.BoolFlag{
+				Name:    "minify",
+				Aliases: []string{"m", "min"},
+				Usage:   "minify files",
+				Value:   false,
+			},
 		},
 		Commands: []*cli.Command{
 			{
@@ -78,16 +84,24 @@ func app() *cli.App {
 	}
 }
 
+func newSite(c *cli.Context) *site.Site {
+	return site.New(
+		c.String("source"),
+		c.String("destination"),
+		c.Bool("minify"),
+	)
+}
+
 func buildCmd(c *cli.Context) (err error) {
-	return site.New(c.String("source"), c.String("destination")).Build()
+	return newSite(c).Build()
 }
 
 func cleanCmd(c *cli.Context) (err error) {
-	return site.New(c.String("source"), c.String("destination")).Clean()
+	return newSite(c).Clean()
 }
 
 func serveCmd(c *cli.Context) (err error) {
-	return site.New(c.String("source"), c.String("destination")).Serve(c.String("addr"))
+	return newSite(c).Serve(c.String("addr"))
 }
 
 func newCmd(c *cli.Context) (err error) {
