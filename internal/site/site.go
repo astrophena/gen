@@ -7,16 +7,25 @@ package site // import "go.astrophena.name/gen/internal/site"
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"time"
 
 	"go.astrophena.name/gen/fileutil"
 	"go.astrophena.name/gen/internal/page"
+
+	"github.com/tdewolff/minify"
+	"github.com/tdewolff/minify/css"
+	"github.com/tdewolff/minify/js"
+	"github.com/tdewolff/minify/json"
+	"github.com/tdewolff/minify/svg"
 )
 
 // Site represents a site.
@@ -42,8 +51,7 @@ func (s *Site) Build() (err error) {
 		start = time.Now()
 	)
 
-	dirs := []string{pagesDir, templatesDir, staticDir}
-	for _, dir := range dirs {
+	for _, dir := range []string{pagesDir, templatesDir, staticDir} {
 		if !fileutil.Exists(dir) && dir != "static" {
 			return fmt.Errorf("%s: doesn't exist, this directory is required for building a site", dir)
 		}
@@ -58,9 +66,15 @@ func (s *Site) Build() (err error) {
 	}
 
 	if fileutil.Exists(staticDir) {
-		fmt.Println("Copying static files...")
-		if err := fileutil.CopyDirContents(staticDir, s.dst); err != nil {
-			return err
+		log.Print("Copying static files...")
+		if s.minify {
+			if err := minifyStaticFiles(staticDir, s.dst); err != nil {
+				return err
+			}
+		} else {
+			if err := fileutil.CopyDirContents(staticDir, s.dst); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -85,9 +99,9 @@ func (s *Site) Build() (err error) {
 
 	if len(pages) > 0 {
 		if len(pages) == 1 {
-			fmt.Printf("Parsing and generating %d page...\n", len(pages))
+			log.Printf("Parsing and generating %d page...\n", len(pages))
 		} else {
-			fmt.Printf("Parsing and generating %d pages...\n", len(pages))
+			log.Printf("Parsing and generating %d pages...\n", len(pages))
 		}
 	}
 
@@ -105,6 +119,48 @@ func (s *Site) Build() (err error) {
 	}
 
 	log.Printf("Built in %v.", time.Since(start))
+
+	return nil
+}
+
+func minifyStaticFiles(src, dst string) error {
+	files, err := fileutil.Files(src)
+	if err != nil {
+		return err
+	}
+
+	m := minify.New()
+	m.AddFunc("text/css", css.Minify)
+	m.AddFuncRegexp(regexp.MustCompile("^(application|text)/(x-)?(java|ecma)script$"), js.Minify)
+	m.AddFuncRegexp(regexp.MustCompile("[/+]json$"), json.Minify)
+	m.AddFunc("image/svg+xml", svg.Minify)
+
+	for _, file := range files {
+		mimetype := mime.TypeByExtension(filepath.Ext(file))
+
+		from, err := os.Open(file)
+		if err != nil {
+			return err
+		}
+		defer from.Close()
+
+		to, err := os.Create(filepath.Join(dst, filepath.Base(file)))
+		if err != nil {
+			return err
+		}
+		defer to.Close()
+
+		err = m.Minify(mimetype, to, from)
+		if err != nil {
+			if err != minify.ErrNotExist {
+				return err
+			}
+
+			if _, err := io.Copy(to, from); err != nil {
+				return err
+			}
+		}
+	}
 
 	return nil
 }
