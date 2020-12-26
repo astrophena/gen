@@ -24,6 +24,12 @@ import (
 	"github.com/tdewolff/minify/html"
 )
 
+// SupportedFormats contains supported page formats.
+var SupportedFormats = []string{".html", ".md"}
+
+// TemplateExt is a template file extension.
+const TemplateExt = ".html"
+
 // Page represents a page.
 type Page struct {
 	URI         string            `yaml:"uri"`
@@ -34,11 +40,8 @@ type Page struct {
 	Template    string            `yaml:"template"`
 }
 
-// SupportedFormats contains page formats supported by gen.
-var SupportedFormats = []string{".html", ".md"}
-
-// Generate generates HTML from a Page and writes it to the file dst.
-func (p *Page) Generate(tpl *template.Template, dst string, minify bool) (err error) {
+// Build builds a Page to dst.
+func (p *Page) Build(tpl *template.Template, dst string, minify bool) (err error) {
 	dir := filepath.Join(dst, filepath.Dir(p.URI))
 	if err := fileutil.Mkdir(dir); err != nil {
 		return err
@@ -115,9 +118,19 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 	return p, nil
 }
 
-// Template returns a template that is used for page generation.
-func Template() *template.Template {
-	return template.New("").Funcs(template.FuncMap{
+// ParseTemplates parses templates from dir and returns a template
+// that is used for generating pages.
+func ParseTemplates(dir string) (*template.Template, error) {
+	tpls, err := fileutil.Files(dir, TemplateExt)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(tpls) < 1 {
+		return nil, fmt.Errorf("no templates found in %s", dir)
+	}
+
+	tpl := template.New("site").Funcs(template.FuncMap{
 		"content": func(p *Page) template.HTML {
 			return template.HTML(p.Content)
 		},
@@ -128,17 +141,14 @@ func Template() *template.Template {
 			return version.Version
 		},
 	})
-}
 
-// ParseTemplates parses tpls into a tpl.
-func ParseTemplates(tpl *template.Template, tpls []string) (*template.Template, error) {
 	for _, t := range tpls {
-		f, err := ioutil.ReadFile(t)
+		b, err := ioutil.ReadFile(t)
 		if err != nil {
 			return nil, err
 		}
 
-		tpl, err = tpl.Parse(string(f))
+		tpl, err = tpl.Parse(string(b))
 		if err != nil {
 			return nil, err
 		}

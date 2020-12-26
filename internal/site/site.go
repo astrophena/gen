@@ -78,16 +78,7 @@ func (s *Site) Build() (err error) {
 		}
 	}
 
-	tpls, err := fileutil.Files(templatesDir, ".html")
-	if err != nil {
-		return err
-	}
-
-	if len(tpls) < 1 {
-		return fmt.Errorf("no templates found in the directory %s", templatesDir)
-	}
-
-	tpl, err := page.ParseTemplates(page.Template(), tpls)
+	tpl, err := page.ParseTemplates(templatesDir)
 	if err != nil {
 		return err
 	}
@@ -112,7 +103,7 @@ func (s *Site) Build() (err error) {
 		}
 
 		if p != nil {
-			if err := p.Generate(tpl, s.dst, s.minify); err != nil {
+			if err := p.Build(tpl, s.dst, s.minify); err != nil {
 				return err
 			}
 		}

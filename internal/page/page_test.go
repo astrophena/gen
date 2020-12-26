@@ -5,23 +5,16 @@
 package page_test
 
 import (
-	"fmt"
 	"html/template"
 	"path/filepath"
 	"reflect"
 	"testing"
 
-	"go.astrophena.name/gen/fileutil"
 	"go.astrophena.name/gen/internal/page"
 )
 
-func testTpl(t *testing.T) *template.Template {
-	tpls, err := fileutil.Files("testdata", ".html")
-	if err != nil {
-		t.Error(err)
-	}
-
-	tpl, err := page.ParseTemplates(page.Template(), tpls)
+func newTpl(t *testing.T) *template.Template {
+	tpl, err := page.ParseTemplates("testdata")
 	if err != nil {
 		t.Error(err)
 	}
@@ -30,23 +23,19 @@ func testTpl(t *testing.T) *template.Template {
 }
 
 func TestValidParse(t *testing.T) {
-	tpl := testTpl(t)
-	f := filepath.Join("testdata", "valid.md")
-
-	p, err := page.Parse(tpl, f)
+	parsed, err := page.Parse(newTpl(t), filepath.Join("testdata", "valid.md"))
 	if err != nil {
 		t.Error(err)
 	}
 
-	// Keep this updated with the testdata/valid.md.
+	// See testdata/valid.md.
 	expected := &page.Page{
 		URI:      "index.html",
-		Content:  fmt.Sprintf("<p>Hello, world!</p>\n"),
+		Content:  "<p>Hello, world!</p>\n",
 		Title:    "Hello, world!",
 		MetaTags: make(map[string]string),
 		Template: "layout",
 	}
-	parsed := p
 
 	if !reflect.DeepEqual(expected, parsed) {
 		t.Errorf("expected %v, but parsed %v", expected, parsed)
