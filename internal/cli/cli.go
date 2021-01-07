@@ -9,8 +9,8 @@ import (
 	"errors"
 
 	"go.astrophena.name/gen/internal/scaffold"
-	"go.astrophena.name/gen/internal/site"
 	"go.astrophena.name/gen/internal/version"
+	"go.astrophena.name/gen/site"
 
 	"github.com/urfave/cli/v2"
 )
