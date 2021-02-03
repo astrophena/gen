@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package site implements site building.
-package site // import "go.astrophena.name/gen/internal/site"
+package site // import "go.astrophena.name/gen/site"
 
 import (
 	"fmt"
@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"go.astrophena.name/gen/fileutil"
-	"go.astrophena.name/gen/internal/page"
+	"go.astrophena.name/gen/page"
 
 	"github.com/tdewolff/minify"
 	"github.com/tdewolff/minify/css"

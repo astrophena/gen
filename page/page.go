@@ -17,7 +17,7 @@ import (
 
 	"go.astrophena.name/gen/fileutil"
 	"go.astrophena.name/gen/frontmatter"
-	"go.astrophena.name/gen/internal/version"
+	"go.astrophena.name/gen/version"
 
 	"github.com/russross/blackfriday/v2"
 	minifypkg "github.com/tdewolff/minify"

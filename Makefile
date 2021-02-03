@@ -1,6 +1,6 @@
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
-LDFLAGS = "-s -w -X go.astrophena.name/gen/internal/version.Version=$(VERSION) -buildid="
+LDFLAGS = "-s -w -X go.astrophena.name/gen/version.Version=$(VERSION) -buildid="
 
 VERSION ?= $(shell git describe --abbrev=0 --tags | cut -c 2-)-next
 
@@ -17,8 +17,11 @@ clean: ## Clean
 dist: ## Build with GoReleaser
 	@ goreleaser --snapshot --skip-publish
 
+generate: ## Generate files
+	@ go generate ./...
+
 test: ## Test
-	@ go test -cover ./...
+	@ go test ./...
 
 help: ## Show help
 	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \

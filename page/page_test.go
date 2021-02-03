@@ -10,7 +10,7 @@ import (
 	"reflect"
 	"testing"
 
-	"go.astrophena.name/gen/internal/page"
+	"go.astrophena.name/gen/page"
 )
 
 func newTpl(t *testing.T) *template.Template {

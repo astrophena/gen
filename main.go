@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"go.astrophena.name/gen/internal/cli"
+	"go.astrophena.name/gen/cli"
 )
 
 func main() {

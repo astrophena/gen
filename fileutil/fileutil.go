@@ -13,7 +13,7 @@ import (
 )
 
 // CopyDirContents recursively copies contents of src to dst or returns an error.
-func CopyDirContents(src, dst string) (err error) {
+func CopyDirContents(src, dst string) error {
 	return filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		sp := strings.TrimPrefix(path, src+string(os.PathSeparator))
 		dp := filepath.Join(dst, sp)
@@ -37,7 +37,7 @@ func CopyDirContents(src, dst string) (err error) {
 
 // CopyFile copies the file src to dst, creating missing directories, if needed
 // or returns an error.
-func CopyFile(src, dst string) (err error) {
+func CopyFile(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func CopyFile(src, dst string) (err error) {
 }
 
 // Exists returns true if a file or directory does exist and false otherwise.
-func Exists(path string) (exists bool) {
+func Exists(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -97,7 +97,7 @@ func Files(dir string, exts ...string) (files []string, err error) {
 
 // Mkdir creates the directory, if it does not already exist or returns an error.
 // It also creates parent directories as needed.
-func Mkdir(dir string) (err error) {
+func Mkdir(dir string) error {
 	if !Exists(dir) {
 		return os.MkdirAll(dir, 0755)
 	}

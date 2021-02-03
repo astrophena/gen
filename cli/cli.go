@@ -8,15 +8,15 @@ package cli // import "go.astrophena.name/gen/internal/cli"
 import (
 	"errors"
 
-	"go.astrophena.name/gen/internal/scaffold"
-	"go.astrophena.name/gen/internal/version"
+	"go.astrophena.name/gen/scaffold"
 	"go.astrophena.name/gen/site"
+	"go.astrophena.name/gen/version"
 
 	"github.com/urfave/cli/v2"
 )
 
 // Run invokes the command line interface of gen.
-func Run(args []string) (err error) {
+func Run(args []string) error {
 	return app().Run(args)
 }
 
@@ -92,23 +92,15 @@ func newSite(c *cli.Context) *site.Site {
 	)
 }
 
-func buildCmd(c *cli.Context) (err error) {
-	return newSite(c).Build()
-}
+func buildCmd(c *cli.Context) error { return newSite(c).Build() }
+func cleanCmd(c *cli.Context) error { return newSite(c).Clean() }
+func serveCmd(c *cli.Context) error { return newSite(c).Serve(c.String("addr")) }
 
-func cleanCmd(c *cli.Context) (err error) {
-	return newSite(c).Clean()
-}
-
-func serveCmd(c *cli.Context) (err error) {
-	return newSite(c).Serve(c.String("addr"))
-}
-
-func newCmd(c *cli.Context) (err error) {
+func newCmd(c *cli.Context) error {
 	dst := c.Args().Get(0)
 
 	if dst == "" {
-		return errors.New("directory is required, but not provided")
+		return errors.New("directory is required")
 	}
 
 	return scaffold.Create(dst)

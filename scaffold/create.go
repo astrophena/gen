@@ -2,7 +2,7 @@
 // Use of this source code is governed by the MIT
 // license that can be found in the LICENSE.md file.
 
-package scaffold // import "go.astrophena.name/gen/internal/scaffold"
+package scaffold // import "go.astrophena.name/gen/scaffold"
 
 import (
 	"fmt"
