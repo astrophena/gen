@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package page implements page parsing and generation.
-package page // import "go.astrophena.name/gen/internal/page"
+package page // import "go.astrophena.name/gen/page"
 
 import (
 	"bytes"
