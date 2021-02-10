@@ -106,13 +106,18 @@ func Parse(tpl *template.Template, src string) (*Page, error) {
 		return nil, fmt.Errorf("%s: missing required frontmatter parameter (title, template, uri)", src)
 	}
 
-	switch ext := filepath.Ext(src); ext {
+	// /example -> /example/index.html
+	if !strings.HasSuffix(p.URI, ".html") {
+		p.URI = p.URI + "/index.html"
+	}
+
+	switch filepath.Ext(src) {
 	case ".html":
 		p.Content = c
 	case ".md":
 		p.Content = string(blackfriday.Run([]byte(c)))
 	default:
-		return nil, fmt.Errorf("%s: format %s doesn't supported", src, strings.Trim(ext, "."))
+		return nil, fmt.Errorf("%s: format does not supported", src)
 	}
 
 	return p, nil

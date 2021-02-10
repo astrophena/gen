@@ -22,6 +22,17 @@ func newTpl(t *testing.T) *template.Template {
 	return tpl
 }
 
+func TestRewrite(t *testing.T) {
+	p, err := page.Parse(newTpl(t), filepath.Join("testdata", "rewrite.md"))
+	if err != nil {
+		t.Error(err)
+	}
+
+	if p.URI != "/hello/index.html" {
+		t.Errorf("%s should be /hello/index.html", p.URI)
+	}
+}
+
 func TestValidParse(t *testing.T) {
 	parsed, err := page.Parse(newTpl(t), filepath.Join("testdata", "valid.md"))
 	if err != nil {
