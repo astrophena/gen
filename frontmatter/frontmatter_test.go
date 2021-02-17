@@ -5,7 +5,7 @@
 package frontmatter_test
 
 import (
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -18,7 +18,7 @@ var (
 )
 
 func TestValidExtract(t *testing.T) {
-	text, err := ioutil.ReadFile(validFile)
+	text, err := os.ReadFile(validFile)
 	if err != nil {
 		t.Error(err)
 	}
@@ -42,7 +42,7 @@ func TestValidExtract(t *testing.T) {
 }
 
 func TestInvalidExtract(t *testing.T) {
-	text, err := ioutil.ReadFile(invalidFile)
+	text, err := os.ReadFile(invalidFile)
 	if err != nil {
 		t.Error(err)
 	}

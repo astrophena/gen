@@ -8,7 +8,6 @@ package site // import "go.astrophena.name/gen/site"
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"mime"
 	"net/http"
@@ -215,7 +214,7 @@ func (s *Site) fs() http.Handler {
 }
 
 func (s *Site) notFound(w http.ResponseWriter, r *http.Request) {
-	nf, err := ioutil.ReadFile(filepath.Join(s.dst, "404.html"))
+	nf, err := os.ReadFile(filepath.Join(s.dst, "404.html"))
 	if err != nil {
 		http.NotFound(w, r)
 		return

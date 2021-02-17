@@ -9,7 +9,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -86,7 +85,7 @@ func (p *Page) Build(tpl *template.Template, dst string, minify bool) (err error
 
 // Parse parses a file from src and returns a Page.
 func Parse(tpl *template.Template, src string) (*Page, error) {
-	b, err := ioutil.ReadFile(src)
+	b, err := os.ReadFile(src)
 	if err != nil {
 		return nil, err
 	}
@@ -148,7 +147,7 @@ func ParseTemplates(dir string) (*template.Template, error) {
 	})
 
 	for _, t := range tpls {
-		b, err := ioutil.ReadFile(t)
+		b, err := os.ReadFile(t)
 		if err != nil {
 			return nil, err
 		}

@@ -7,7 +7,6 @@ package fileutil_test
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -52,12 +51,12 @@ func TestCopyFile(t *testing.T) {
 	}
 	t.Cleanup(remove(t, f2))
 
-	b1, err := ioutil.ReadFile(f1)
+	b1, err := os.ReadFile(f1)
 	if err != nil {
 		t.Error(err)
 	}
 
-	b2, err := ioutil.ReadFile(f2)
+	b2, err := os.ReadFile(f2)
 	if err != nil {
 		t.Error(err)
 	}
