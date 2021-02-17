@@ -17,9 +17,6 @@ clean: ## Clean
 dist: ## Build with GoReleaser
 	@ goreleaser --snapshot --skip-publish
 
-generate: ## Generate files
-	@ go generate ./...
-
 test: ## Test
 	@ go test ./...
 
