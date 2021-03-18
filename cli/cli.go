@@ -49,20 +49,17 @@ func app() *cli.App {
 		},
 		Commands: []*cli.Command{
 			{
-				Name:    "build",
-				Aliases: []string{"b"},
-				Usage:   "Perform a one-off site build",
-				Action:  buildCmd,
+				Name:   "build",
+				Usage:  "Perform a one-off site build",
+				Action: buildCmd,
 			},
 			{
-				Name:    "clean",
-				Aliases: []string{"c"},
-				Usage:   "Remove all generated files",
-				Action:  cleanCmd,
+				Name:   "clean",
+				Usage:  "Remove all generated files",
+				Action: cleanCmd,
 			},
 			{
-				Name:    "serve",
-				Aliases: []string{"s"},
+				Name: "serve",
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:    "addr",
@@ -75,10 +72,9 @@ func app() *cli.App {
 				Action: serveCmd,
 			},
 			{
-				Name:    "new",
-				Aliases: []string{"n"},
-				Usage:   "Generate a new site",
-				Action:  newCmd,
+				Name:   "new",
+				Usage:  "Generate a new site",
+				Action: newCmd,
 			},
 		},
 	}

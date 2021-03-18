@@ -25,7 +25,9 @@ nfpms:
     description: An another static site generator.
     license: MIT
     formats:
+      - apk
       - deb
+      - rpm
     contents:
       - src: completions/completion.bash
         dst: /usr/share/bash-completion/completions/gen
