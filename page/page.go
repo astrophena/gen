@@ -27,7 +27,7 @@ import (
 var SupportedFormats = []string{".html", ".md"}
 
 // TemplateExt is a template file extension.
-const TemplateExt = ".html"
+const TemplateExt = ".tmpl"
 
 // Page represents a page.
 type Page struct {
