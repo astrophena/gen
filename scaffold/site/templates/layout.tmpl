@@ -1,18 +1,25 @@
-{{ define "layout" -}}
+{{ define "layout" }}
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    {{ range $name, $content := .MetaTags -}}
+    {{ range $name, $content := .MetaTags }}
     <meta name="{{ $name }}" content="{{ $content }}">
-    {{ end -}}
+    {{ end }}
     <link rel="stylesheet" href="/sitewide.css">
     <title>{{ .Title }}</title>
   </head>
   <body>
-    <h1>{{ .Title }}</h1>
-    {{ content . -}}
+    <header>
+      <h1>{{ .Title }}</h1>
+    </header>
+    <main>{{ content . }}</main>
+    <footer>
+      <p>
+        Built with <a href="https://go.astrophena.name/gen">gen</a>.
+      </p>
+    </footer>
   </body>
 </html>
 {{ end -}}
