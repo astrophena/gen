@@ -26,6 +26,11 @@ nfpms:
     license: MIT
     formats:
       - deb
+    contents:
+      - src: completions/completion.bash
+        dst: /usr/share/bash-completion/completions/gen
+      - src: completions/completion.zsh
+        dst: /usr/share/zsh/vendor-completions/_gen
     bindir: /usr/bin
 checksum:
   name_template: 'checksums.txt'

@@ -15,7 +15,7 @@ clean: ## Clean
 	@ go clean
 
 dist: ## Build with GoReleaser
-	@ goreleaser --snapshot --skip-publish
+	@ goreleaser --snapshot --skip-publish --rm-dist
 
 test: ## Test
 	@ go test ./...
