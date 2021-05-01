@@ -12,7 +12,7 @@ build: ## Build
 	@ GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -trimpath -ldflags=$(LDFLAGS)
 
 clean: ## Clean
-	@ go clean
+	@ git clean -d -f -x
 
 dist: ## Build with GoReleaser
 	@ goreleaser --snapshot --skip-publish --rm-dist

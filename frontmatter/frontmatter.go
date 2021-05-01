@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package frontmatter implements frontmatter-related functions.
-package frontmatter // import "go.astrophena.name/gen/frontmatter"
+package frontmatter
 
 import (
 	"bufio"
@@ -18,7 +18,7 @@ const delim = "---\n"
 // ErrNotDetected is returned when no frontmatter has been detected.
 var ErrNotDetected = errors.New("no frontmatter detected")
 
-// Contains returns true if text includes frontmatter.
+// Contains returns true if the supplied text includes frontmatter.
 func Contains(text string) (contains bool, err error) {
 	r := bufio.NewReader(strings.NewReader(text))
 
@@ -30,7 +30,8 @@ func Contains(text string) (contains bool, err error) {
 	return string(b) == delim, nil
 }
 
-// Extract extracts frontmatter from text, returning frontmatter and content.
+// Extract extracts frontmatter from supplied text, returning
+// frontmatter and content.
 func Extract(text string) (frontmatter, content string, err error) {
 	c, err := Contains(text)
 	if err != nil {
@@ -65,8 +66,8 @@ func Extract(text string) (frontmatter, content string, err error) {
 	return frontmatter, content, nil
 }
 
-// Parse extracts YAML frontmatter from text and unmarshals it into obj,
-// returning content without frontmatter and an error.
+// Parse extracts frontmatter from supplied text and unmarshals it
+// into obj, returning content without frontmatter and an error.
 func Parse(text string, obj interface{}) (content string, err error) {
 	fm, c, err := Extract(text)
 	if err != nil {

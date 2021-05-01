@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package scaffold implements the creation of new sites.
-package scaffold // import "go.astrophena.name/gen/scaffold"
+package scaffold
 
 import (
 	"embed"

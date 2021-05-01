@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE.md file.
 
 // Package cli implements the command line interface of gen.
-package cli // import "go.astrophena.name/gen/internal/cli"
+package cli
 
 import (
 	"errors"
@@ -17,11 +17,7 @@ import (
 
 // Run invokes the command line interface of gen.
 func Run(args []string) error {
-	return app().Run(args)
-}
-
-func app() *cli.App {
-	return &cli.App{
+	app := &cli.App{
 		Name:                 "gen",
 		Usage:                "An another static site generator.",
 		Version:              version.Version,
@@ -51,12 +47,12 @@ func app() *cli.App {
 			{
 				Name:   "build",
 				Usage:  "Perform a one-off site build",
-				Action: buildCmd,
+				Action: build,
 			},
 			{
 				Name:   "clean",
 				Usage:  "Remove all generated files",
-				Action: cleanCmd,
+				Action: clean,
 			},
 			{
 				Name: "serve",
@@ -69,35 +65,51 @@ func app() *cli.App {
 					},
 				},
 				Usage:  "Build and serve the site locally",
-				Action: serveCmd,
+				Action: serve,
 			},
 			{
-				Name:   "new",
-				Usage:  "Generate a new site",
-				Action: newCmd,
+				Name:  "new",
+				Usage: "Generate a new site",
+				Action: func(c *cli.Context) error {
+					dst := c.Args().Get(0)
+
+					if dst == "" {
+						return errors.New("directory is required")
+					}
+
+					return scaffold.Create(dst)
+				},
 			},
 		},
 	}
+
+	return app.Run(args)
 }
 
-func newSite(c *cli.Context) *site.Site {
-	return site.New(
-		c.String("source"),
-		c.String("destination"),
-		c.Bool("minify"),
-	)
+func newSite(c *cli.Context) (*site.Site, error) {
+	return site.New(c.String("source"), c.String("destination"), c.Bool("minify"))
 }
 
-func buildCmd(c *cli.Context) error { return newSite(c).Build() }
-func cleanCmd(c *cli.Context) error { return newSite(c).Clean() }
-func serveCmd(c *cli.Context) error { return newSite(c).Serve(c.String("addr")) }
-
-func newCmd(c *cli.Context) error {
-	dst := c.Args().Get(0)
-
-	if dst == "" {
-		return errors.New("directory is required")
+func build(c *cli.Context) error {
+	s, err := newSite(c)
+	if err != nil {
+		return err
 	}
+	return s.Build()
+}
 
-	return scaffold.Create(dst)
+func clean(c *cli.Context) error {
+	s, err := newSite(c)
+	if err != nil {
+		return err
+	}
+	return s.Clean()
+}
+
+func serve(c *cli.Context) error {
+	s, err := newSite(c)
+	if err != nil {
+		return err
+	}
+	return s.Serve(c.String("addr"))
 }
