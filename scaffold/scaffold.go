@@ -22,7 +22,7 @@ var site embed.FS
 // Create creates a new site in the path dst.
 func Create(dst string) (err error) {
 	return fs.WalkDir(site, "site", func(path string, d fs.DirEntry, err error) error {
-		sp := strings.TrimPrefix(path, "site"+string(os.PathSeparator))
+		sp := strings.TrimPrefix(path, "site/")
 		dp := filepath.Join(dst, sp)
 
 		if d.IsDir() {
