@@ -37,8 +37,4 @@ jobs:
       - name: Build
         run: make
       - name: Test
-        run: |
-          make test
-          ./gen new example
-          cd example
-          ../gen build
+        run: make test
