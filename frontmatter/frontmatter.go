@@ -63,7 +63,7 @@ func Extract(text string) (frontmatter, content string, err error) {
 		}
 	}
 
-	return frontmatter, content, nil
+	return frontmatter, content, scanner.Err()
 }
 
 // Parse extracts frontmatter from supplied text and unmarshals it
