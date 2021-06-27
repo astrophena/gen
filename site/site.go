@@ -48,13 +48,20 @@ type Site struct {
 	minify   bool
 	src, dst string
 	tpl      *template.Template
+	quiet    bool
+}
+
+func (s *Site) logf(format string, args ...interface{}) {
+	if !s.quiet {
+		log.Printf(format, args...)
+	}
 }
 
 // New returns a new site.
-func New(src, dst string, minify bool) (*Site, error) {
+func New(src, dst string, quiet, minify bool) (*Site, error) {
 	var (
 		err error
-		s   = &Site{src: src, dst: dst, minify: minify}
+		s   = &Site{src: src, dst: dst, quiet: quiet, minify: minify}
 	)
 
 	for _, dir := range []string{s.pagesDir(), s.templatesDir()} {
@@ -84,7 +91,7 @@ func (s *Site) Build() error {
 	}
 
 	if fileutil.Exists(s.staticDir()) {
-		log.Println("Copying static files...")
+		s.logf("Copying static files...")
 
 		if s.minify {
 			if err := minifyStaticFiles(s.staticDir(), s.dst); err != nil {
@@ -104,9 +111,9 @@ func (s *Site) Build() error {
 
 	if len(pages) > 0 {
 		if len(pages) == 1 {
-			log.Printf("Parsing and generating %d page...", len(pages))
+			s.logf("Parsing and generating %d page...", len(pages))
 		} else {
-			log.Printf("Parsing and generating %d pages...", len(pages))
+			s.logf("Parsing and generating %d pages...", len(pages))
 		}
 	}
 
@@ -124,7 +131,7 @@ func (s *Site) Build() error {
 		}
 	}
 
-	log.Printf("Built in %v.", time.Since(start))
+	s.logf("Built in %v.", time.Since(start))
 
 	return nil
 }
@@ -151,8 +158,8 @@ func (s *Site) Serve(addr string) error {
 		return err
 	}
 
-	log.Printf("Listening on %s.", addr)
-	log.Println("Use Ctrl+C to stop.")
+	s.logf("Listening on %s.", addr)
+	s.logf("Use Ctrl+C to stop.")
 
 	var (
 		errc = make(chan error)
@@ -174,7 +181,7 @@ func (s *Site) Serve(addr string) error {
 	case err := <-errc:
 		return err
 	case <-stop:
-		log.Printf("Shutting down the server...")
+		s.logf("Shutting down the server...")
 
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()

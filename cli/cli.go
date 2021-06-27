@@ -42,6 +42,12 @@ func Run(args []string) error {
 				Usage:   "minify files",
 				Value:   false,
 			},
+			&cli.BoolFlag{
+				Name:    "quiet",
+				Aliases: []string{"q"},
+				Usage:   "quiet mode",
+				Value:   false,
+			},
 		},
 		Commands: []*cli.Command{
 			{
@@ -87,7 +93,7 @@ func Run(args []string) error {
 }
 
 func newSite(c *cli.Context) (*site.Site, error) {
-	return site.New(c.String("source"), c.String("destination"), c.Bool("minify"))
+	return site.New(c.String("source"), c.String("destination"), c.Bool("quiet"), c.Bool("minify"))
 }
 
 func build(c *cli.Context) error {

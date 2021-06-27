@@ -1,8 +1,6 @@
 package site_test
 
 import (
-	"io"
-	"log"
 	"os"
 	"testing"
 
@@ -11,9 +9,6 @@ import (
 )
 
 func TestBuild(t *testing.T) {
-	// Silence log output.
-	log.SetOutput(io.Discard)
-
 	src, err := os.MkdirTemp("", "gen-site-test-src")
 	if err != nil {
 		t.Fatalf("Failed to create a temporary directory: %v", err)
@@ -29,7 +24,7 @@ func TestBuild(t *testing.T) {
 		t.Fatalf("Failed to generate a new site: %v", err)
 	}
 
-	s, err := site.New(src, dst, false)
+	s, err := site.New(src, dst, true, false)
 	if err != nil {
 		t.Fatalf("Failed to initialize a new site: %v", err)
 	}
