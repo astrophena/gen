@@ -8,6 +8,7 @@ package fileutil
 
 import (
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -36,8 +37,7 @@ func CopyDirContents(src, dst string) error {
 	})
 }
 
-// CopyFile copies the file src to dst, creating missing directories,
-// if needed.
+// CopyFile copies the file src to dst.
 func CopyFile(src, dst string) error {
 	in, err := os.Open(src)
 	if err != nil {
@@ -55,7 +55,8 @@ func CopyFile(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	return out.Close()
+
+	return nil
 }
 
 // Exists returns true if a file or directory does exist and false
@@ -71,23 +72,23 @@ func Exists(path string) bool {
 // with extensions exts, or an error. If no file extensions are
 // supplied, all files are returned.
 func Files(dir string, exts ...string) (files []string, err error) {
-	return files, filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	return files, filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
-		if info.IsDir() {
+		if d.IsDir() {
 			return nil
 		}
 
 		if len(exts) > 0 {
-			var extMatches bool
+			var matches bool
 			for _, ext := range exts {
 				if filepath.Ext(path) == ext {
-					extMatches = true
+					matches = true
 				}
 			}
-			if !extMatches {
+			if !matches {
 				return nil
 			}
 		}
